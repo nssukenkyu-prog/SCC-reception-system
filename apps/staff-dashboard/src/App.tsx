@@ -3,6 +3,9 @@ import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebas
 import { auth } from './firebase';
 import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveVisits, updatePatientName, importPatients } from './services/staffService';
 import type { Visit } from '@reception/shared';
+import { VisitRow } from './components/VisitRow';
+import { AnimatePresence } from 'framer-motion';
+import { UserPlus, LogOut, Upload, XCircle } from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -127,13 +130,21 @@ function App() {
 
   return (
     <div className="dashboard">
-      <header>
-        <h1>Reception Dashboard</h1>
-        <div className="controls">
-          <button onClick={() => setShowImportModal(true)} className="secondary">一括登録</button>
-          <button onClick={() => setShowProxyForm(!showProxyForm)}>代行受付</button>
-          <button onClick={handleCloseAll} className="danger">一括クローズ</button>
-          <button onClick={handleLogout}>Logout</button>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <h1 style={{ fontSize: '1.5rem', margin: 0 }}>受信トレイ</h1>
+        <div className="controls" style={{ display: 'flex', gap: '10px' }}>
+          <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV登録">
+            <Upload size={20} />
+          </button>
+          <button onClick={() => setShowProxyForm(!showProxyForm)} className="icon-btn-large" title="代行受付">
+            <UserPlus size={20} />
+          </button>
+          <button onClick={handleCloseAll} className="icon-btn-large danger" title="一括クローズ">
+            <XCircle size={20} />
+          </button>
+          <button onClick={handleLogout} className="icon-btn-large" title="ログアウト">
+            <LogOut size={20} />
+          </button>
         </div>
       </header>
 
@@ -220,59 +231,71 @@ function App() {
         </div>
       </div>
 
-      <div className="visit-list">
+      <div className="visit-list-container">
         <h2>受付中 ({activeVisits.length})</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>No</th>
-              <th>時間</th>
-              <th>氏名</th>
-              <th>診察券番号</th>
-              <th>操作</th>
-            </tr>
-          </thead>
-          <tbody>
+        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '40px 100px 1fr 100px auto', padding: '0 20px', marginBottom: '8px', color: '#666', fontSize: '0.9em' }}>
+          <div>No</div>
+          <div>No.</div>
+          <div>氏名</div>
+          <div>時間</div>
+          <div>編集</div>
+        </div>
+
+        <div className="visit-list-body">
+          <AnimatePresence>
             {activeVisits.map((v, i) => (
-              <tr key={v.id} className="active-row">
-                <td>{i + 1}</td>
-                <td>{v.arrivedAt?.toDate ? v.arrivedAt.toDate().toLocaleTimeString() : 'Now'}</td>
-                <td>
-                  {v.name}
-                  <button className="icon-btn" onClick={() => v.patientId && openEditModal(v.patientId, v.name)}>✎</button>
-                </td>
-                <td>{v.patientId}</td>
-                <td>
-                  <button onClick={() => v.id && updateVisitStatus(v.id, 'paid')}>会計済</button>
-                  <button onClick={() => v.id && updateVisitStatus(v.id, 'cancelled')} className="secondary">取消</button>
-                </td>
-              </tr>
+              <VisitRow
+                key={v.id}
+                visit={v}
+                index={i}
+                onEdit={openEditModal}
+                onComplete={(id) => updateVisitStatus(id, 'paid')}
+                onCancel={(id) => updateVisitStatus(id, 'cancelled')}
+              />
             ))}
-          </tbody>
-        </table>
+          </AnimatePresence>
+          {activeVisits.length === 0 && (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#aaa' }}>
+              現在待っている患者さんはいません
+            </div>
+          )}
+        </div>
       </div>
 
-      <div className="visit-list history">
-        <h2>完了/取消 ({completedVisits.length})</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>時間</th>
-              <th>氏名</th>
-              <th>ステータス</th>
-            </tr>
-          </thead>
-          <tbody>
-            {completedVisits.map((v) => (
-              <tr key={v.id} className={v.status}>
-                <td>{v.arrivedAt?.toDate ? v.arrivedAt.toDate().toLocaleTimeString() : ''}</td>
-                <td>{v.name}</td>
-                <td>{v.status === 'paid' ? '会計済' : '取消'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {/* History Section - Keep as table or simplify? Table is fine for history for now. */}
+      {completedVisits.length > 0 && (
+        <div className="visit-list history" style={{ marginTop: '40px', borderTop: '1px solid #eee', paddingTop: '20px' }}>
+          <h3 style={{ color: '#888' }}>完了/取消履歴 ({completedVisits.length})</h3>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', color: '#666' }}>
+              <thead>
+                <tr style={{ textAlign: 'left', borderBottom: '1px solid #eee' }}>
+                  <th style={{ padding: '10px' }}>時間</th>
+                  <th style={{ padding: '10px' }}>氏名</th>
+                  <th style={{ padding: '10px' }}>ステータス</th>
+                </tr>
+              </thead>
+              <tbody>
+                {completedVisits.map((v) => (
+                  <tr key={v.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
+                    <td style={{ padding: '10px' }}>{v.arrivedAt?.toDate ? v.arrivedAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</td>
+                    <td style={{ padding: '10px' }}>{v.name}</td>
+                    <td style={{ padding: '10px' }}>
+                      <span style={{
+                        padding: '4px 8px', borderRadius: '4px', fontSize: '0.8em',
+                        background: v.status === 'paid' ? '#e8f5e9' : '#ffebee',
+                        color: v.status === 'paid' ? '#2e7d32' : '#c62828'
+                      }}>
+                        {v.status === 'paid' ? '会計済' : '取消'}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </div >
   );
 }

@@ -23,8 +23,14 @@ service cloud.firestore {
       // we allow create if auth is strict, but let's allow any auth for now as long as they authenticate
       allow create: if request.auth != null;
       
-      // Allow read/update if the patient doc has the user's firebaseUid
-      allow read, update: if request.auth != null && resource.data.firebaseUid == request.auth.uid;
+      // Allow read/update if:
+      // 1. The patient doc has the user's firebaseUid (Owner)
+      // 2. The patient doc has NO firebaseUid (Unclaimed/Imported) - allows linking
+      allow read, update: if request.auth != null && (
+        resource.data.firebaseUid == request.auth.uid || 
+        !('firebaseUid' in resource.data) ||
+        resource.data.firebaseUid == null
+      );
     }
 
     match /visits/{visitId} {

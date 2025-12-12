@@ -26,9 +26,9 @@ function App() {
           const p = await getPatientByLineId(profile.userId);
           setPatient(p);
         }
-      } catch (e) {
+      } catch (e: any) {
         console.error(e);
-        setError('LIFF initialization failed');
+        setError(`LIFF Error: ${e.message || JSON.stringify(e)}`);
       } finally {
         setLoading(false);
       }
