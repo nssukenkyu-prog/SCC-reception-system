@@ -1270,3 +1270,18 @@
 2025-12-12T23:24:07.964980Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
 2025-12-12T23:24:13.964613Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
 2025-12-12T23:24:13.964663Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-12T23:29:55.452642Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/public/_redirects")}
+2025-12-12T23:29:55.466196Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-12T23:29:57.443124Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/public/_redirects")}
+2025-12-12T23:29:57.443148Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-12T23:30:02.643514Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/public-status/public/_redirects")}
+2025-12-12T23:30:02.643594Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("public-status"), path: AnchoredSystemPathBuf("apps/public-status") }}))
+2025-12-12T23:30:02.743028Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/public-status/public/_redirects")}
+2025-12-12T23:30:02.743041Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("public-status"), path: AnchoredSystemPathBuf("apps/public-status") }}))
+2025-12-12T23:30:02.743060Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-12T23:30:20.347548Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/public-status/public/_redirects")}
+2025-12-12T23:30:20.347600Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("public-status"), path: AnchoredSystemPathBuf("apps/public-status") }}))
+2025-12-12T23:30:20.528932Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-12T23:30:20.529009Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/public-status/public/_redirects")}
+2025-12-12T23:30:20.529013Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("public-status"), path: AnchoredSystemPathBuf("apps/public-status") }}))
+2025-12-12T23:30:20.529025Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
