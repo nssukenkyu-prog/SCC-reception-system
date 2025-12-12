@@ -1,0 +1,53 @@
+{
+    "firestore": {
+        "rules": "firebase/firestore.rules",
+        "indexes": "firebase/firestore.indexes.json"
+    },
+    "hosting": [
+        {
+            "target": "patient-liff",
+            "public": "apps/patient-liff/dist",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "rewrites": [
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ]
+        },
+        {
+            "target": "staff-dashboard",
+            "public": "apps/staff-dashboard/dist",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "rewrites": [
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ]
+        },
+        {
+            "target": "public-status",
+            "public": "apps/public-status/dist",
+            "ignore": [
+                "firebase.json",
+                "**/.*",
+                "**/node_modules/**"
+            ],
+            "rewrites": [
+                {
+                    "source": "**",
+                    "destination": "/index.html"
+                }
+            ]
+        }
+    ]
+}

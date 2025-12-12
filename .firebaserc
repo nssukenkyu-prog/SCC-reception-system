@@ -1,0 +1,21 @@
+{
+  "projects": {
+    "default": "sccreception-system"
+  },
+  "targets": {
+    "sccreception-system": {
+      "hosting": {
+        "patient-liff": [
+          "sccreception-system"
+        ],
+        "staff-dashboard": [
+          "sccreception-system-staff"
+        ],
+        "public-status": [
+          "sccreception-system-public"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

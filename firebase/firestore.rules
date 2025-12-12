@@ -1,0 +1,41 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper to check if user is authenticated (Staff uses Email/Pass, Patient uses Anonymous)
+    // We assume Staff has a specific email domain or UID, but for this demo we'll assume
+    // any authenticated user with email/password is staff, and anonymous is patient.
+    // Actually, we can check provider.
+    
+    function isStaff() {
+      return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    
+    function isPatient() {
+      return request.auth != null && request.auth.token.firebase.sign_in_provider == 'anonymous';
+    }
+
+    match /patients/{patientId} {
+      // Staff can do anything
+      allow read, write: if isStaff();
+      
+      // Patient can read (to check if linked) -      // Relaxed rules for debugging/prototype
+      allow read, write: if request.auth != null;
+    }
+
+    match /visits/{visitId} {
+      allow read: if isStaff();
+      allow update: if isStaff();
+      
+      // Patient can create a visit
+      allow create: if (isPatient() || isStaff())
+                   && request.resource.data.status == 'active'
+                   && request.resource.data.date == string(request.time.date());
+    }
+
+    match /publicStatus/today {
+      allow read: if true;
+      allow write: if isStaff();
+    }
+  }
+}
