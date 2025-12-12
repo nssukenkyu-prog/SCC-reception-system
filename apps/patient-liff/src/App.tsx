@@ -91,16 +91,18 @@ function App() {
 
       {!patient ? (
         <div className="card">
-          <h2>初回登録</h2>
-          <p>診察券番号を入力してください</p>
+          <h2>診察券をお持ちの方</h2>
+          <p style={{ marginBottom: '20px', color: '#555' }}>お手元の診察券番号を入力してください。<br />(初めての方もこちらから)</p>
           <input
             type="text"
+            pattern="\d*"
             value={inputPatientId}
             onChange={(e) => setInputPatientId(e.target.value)}
-            placeholder="診察券番号"
+            placeholder="例: 12345"
+            style={{ fontSize: '20px', textAlign: 'center' }}
           />
           <button onClick={handleLink} disabled={registering}>
-            {registering ? '登録中...' : '登録する'}
+            {registering ? '登録中...' : '次へ進む'}
           </button>
         </div>
       ) : (
@@ -112,8 +114,8 @@ function App() {
               <p>待合室でお待ちください。</p>
             </div>
           ) : (
-            <button className="primary-btn" onClick={handleCheckIn} disabled={checkingIn}>
-              {checkingIn ? '処理中...' : '来院受付をする'}
+            <button className="primary-btn" onClick={handleCheckIn} disabled={checkingIn} style={{ background: '#007bff' }}>
+              {checkingIn ? '処理中...' : '受付する'}
             </button>
           )}
         </div>

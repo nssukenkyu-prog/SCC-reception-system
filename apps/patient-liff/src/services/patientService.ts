@@ -41,7 +41,8 @@ export const linkPatient = async (patientId: string, lineUserId: string): Promis
 };
 
 export const createVisit = async (patient: Patient): Promise<void> => {
-    const today = new Date().toISOString().split('T')[0];
+    // Use JST for date consistency
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
 
     // Transaction to prevent double booking and ensure consistency
     await runTransaction(db, async (transaction) => {

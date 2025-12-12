@@ -1,16 +1,20 @@
 .container {
-  max-width: 600px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 20px;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  min-height: 100vh;
 }
 
 .card {
   background: #fff;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  border-radius: 16px;
+  padding: 30px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin: 20px 0;
 }
 
@@ -26,15 +30,21 @@ input {
 
 button {
   width: 100%;
-  padding: 14px;
-  background: #06c755; /* LINE Green */
+  padding: 16px;
+  background: #06c755;
+  /* LINE Green */
   color: white;
   border: none;
-  border-radius: 8px;
-  font-size: 16px;
+  border-radius: 12px;
+  font-size: 18px;
   font-weight: bold;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 20px;
+  transition: opacity 0.2s;
+}
+
+button:active {
+  opacity: 0.8;
 }
 
 button:disabled {

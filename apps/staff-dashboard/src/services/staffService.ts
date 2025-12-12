@@ -1,8 +1,8 @@
-import { collection, query, where, onSnapshot, doc, updateDoc, serverTimestamp, writeBatch, setDoc, orderBy, addDoc } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, doc, updateDoc, serverTimestamp, writeBatch, setDoc, orderBy, addDoc, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import type { Visit, PublicStatus } from '@reception/shared';
 
-export const subscribeToVisits = (date: string, callback: (visits: Visit[]) => void) => {
+export const subscribeToVisits = (date: string, callback: (visits: Visit[]) => void, onError?: (error: any) => void) => {
     const q = query(
         collection(db, 'visits'),
         where('date', '==', date),
@@ -13,6 +13,9 @@ export const subscribeToVisits = (date: string, callback: (visits: Visit[]) => v
         const visits = snapshot.docs.map(d => ({ ...d.data(), id: d.id } as Visit));
         callback(visits);
         updatePublicStatus(visits); // Aggregate on client side
+    }, (error) => {
+        console.error("Error fetching visits:", error);
+        if (onError) onError(error);
     });
 };
 
@@ -26,7 +29,7 @@ export const updateVisitStatus = async (visitId: string, status: 'paid' | 'cance
 };
 
 export const createProxyVisit = async (name: string, patientId: string) => {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
     await addDoc(collection(db, 'visits'), {
         date: today,
         patientId,
@@ -81,4 +84,52 @@ const updatePublicStatus = async (visits: Visit[]) => {
     };
 
     await setDoc(doc(db, 'publicStatus', 'today'), status);
+};
+
+export const updatePatientName = async (patientId: string, newName: string) => {
+    const patientRef = doc(db, 'patients', patientId);
+    await updateDoc(patientRef, { name: newName });
+
+    // Also update current active visits for this patient to reflect the new name immediately
+    const q = query(
+        collection(db, 'visits'),
+        where('patientId', '==', patientId),
+        where('status', '==', 'active')
+    );
+    const snapshot = await getDocs(q);
+    const batch = writeBatch(db);
+    snapshot.docs.forEach(d => {
+        batch.update(d.ref, { name: newName });
+    });
+    await batch.commit();
+};
+
+export const importPatients = async (csvText: string) => {
+    const lines = csvText.split('\n');
+    const batch = writeBatch(db);
+    let count = 0;
+
+    for (const line of lines) {
+        const [patientId, name] = line.split(',').map(s => s.trim());
+        if (!patientId || !name) continue;
+
+        const ref = doc(db, 'patients', patientId);
+        batch.set(ref, {
+            patientId,
+            name,
+            kana: name,
+            updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        count++;
+        if (count >= 450) {
+            await batch.commit();
+            count = 0;
+        }
+    }
+
+    if (count > 0) {
+        await batch.commit();
+    }
+    return lines.length;
 };

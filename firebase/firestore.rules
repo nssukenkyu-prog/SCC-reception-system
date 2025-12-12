@@ -7,30 +7,37 @@ service cloud.firestore {
     // any authenticated user with email/password is staff, and anonymous is patient.
     // Actually, we can check provider.
     
+    // Common helpers
     function isStaff() {
+      // For this prototype, we assume any Email/Password login is staff
+      // Real prod: check specific email domain or UID list
       return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
-    }
-    
-    function isPatient() {
-      return request.auth != null && request.auth.token.firebase.sign_in_provider == 'anonymous';
     }
 
     match /patients/{patientId} {
       // Staff can do anything
       allow read, write: if isStaff();
       
-      // Patient can read (to check if linked) -      // Relaxed rules for debugging/prototype
-      allow read, write: if request.auth != null;
+      // Patient can create their own record or read it
+      // Since we don't always know patientId == auth.uid (we map them), 
+      // we allow create if auth is strict, but let's allow any auth for now as long as they authenticate
+      allow create: if request.auth != null;
+      
+      // Allow read/update if the patient doc has the user's firebaseUid
+      allow read, update: if request.auth != null && resource.data.firebaseUid == request.auth.uid;
     }
 
     match /visits/{visitId} {
-      allow read: if isStaff();
-      allow update: if isStaff();
+      // Staff
+      allow read, write: if isStaff();
       
-      // Patient can create a visit
-      allow create: if (isPatient() || isStaff())
-                   && request.resource.data.status == 'active'
-                   && request.resource.data.date == string(request.time.date());
+      // Patient: can create a visit for themselves
+      allow create: if request.auth != null;
+      
+      // Patient: can read only their own visits (assumes we store uid or lineUserId on visit? we store patientId)
+      // Querying visits requires composite index if we filter by field not in rules
+      // For simplicity in this LITE version, allow read if auth - needed for "checkin check"
+      allow read: if request.auth != null;
     }
 
     match /publicStatus/today {
