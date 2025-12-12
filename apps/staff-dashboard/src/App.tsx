@@ -4,8 +4,8 @@ import { auth } from './firebase';
 import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveVisits, updatePatientName, importPatients } from './services/staffService';
 import type { Visit } from '@reception/shared';
 import { VisitRow } from './components/VisitRow';
-import { AnimatePresence } from 'framer-motion';
-import { UserPlus, LogOut, Upload, XCircle } from 'lucide-react';
+import { AnimatePresence, motion } from 'framer-motion';
+import { UserPlus, LogOut, Upload, XCircle, Activity, Users } from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -105,22 +105,44 @@ function App() {
   if (!user) {
     return (
       <div className="login-container">
-        <h1>Staff Login</h1>
-        <form onSubmit={handleLogin}>
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={e => setEmail(e.target.value)}
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <button type="submit">Login</button>
-        </form>
+        <motion.div
+          className="login-card"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div style={{ marginBottom: 20 }}>
+            <div style={{ width: 60, height: 60, background: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)', borderRadius: '16px', margin: '0 auto', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Activity color="white" size={32} />
+            </div>
+          </div>
+          <h2>Reception Command</h2>
+          <form onSubmit={handleLogin}>
+            <input
+              type="email"
+              placeholder="Operator ID"
+              className="login-input"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <input
+              type="password"
+              placeholder="Access Key"
+              className="login-input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+            <motion.button
+              type="submit"
+              className="login-btn"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              Initialize Section
+            </motion.button>
+          </form>
+          {errorMsg && <p style={{ color: '#f472b6', marginTop: 20 }}>{errorMsg}</p>}
+        </motion.div>
       </div>
     );
   }
@@ -130,20 +152,23 @@ function App() {
 
   return (
     <div className="dashboard">
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
-        <h1 style={{ fontSize: '1.5rem', margin: 0 }}>受信トレイ</h1>
+      <header>
+        <h1>
+          <Activity size={28} style={{ marginRight: 10, color: '#38bdf8' }} />
+          SCC Reception <span style={{ opacity: 0.4, fontWeight: 400, marginLeft: 10 }}>Live Command</span>
+        </h1>
         <div className="controls" style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV登録">
-            <Upload size={20} />
+          <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV Import">
+            <Upload size={22} />
           </button>
-          <button onClick={() => setShowProxyForm(!showProxyForm)} className="icon-btn-large" title="代行受付">
-            <UserPlus size={20} />
+          <button onClick={() => setShowProxyForm(!showProxyForm)} className="icon-btn-large" title="Proxy Entry">
+            <UserPlus size={22} />
           </button>
-          <button onClick={handleCloseAll} className="icon-btn-large danger" title="一括クローズ">
-            <XCircle size={20} />
+          <button onClick={handleCloseAll} className="icon-btn-large danger" title="Close All">
+            <XCircle size={22} />
           </button>
-          <button onClick={handleLogout} className="icon-btn-large" title="ログアウト">
-            <LogOut size={20} />
+          <button onClick={handleLogout} className="icon-btn-large" title="Logout">
+            <LogOut size={22} />
           </button>
         </div>
       </header>
@@ -220,25 +245,25 @@ function App() {
         )
       }
 
-      <div className="stats">
-        <div className="stat-card">
-          <h3>待ち人数</h3>
-          <p className="stat-value">{activeVisits.length}人</p>
+      <div className="stats" style={{ gridTemplateColumns: '1fr 1fr' }}>
+        <div className="stat-card active">
+          <h3>Waiting Queue</h3>
+          <p className="stat-value">{activeVisits.length}</p>
         </div>
         <div className="stat-card">
-          <h3>本日の来院</h3>
-          <p className="stat-value">{visits.length}人</p>
+          <h3>Total Visits</h3>
+          <p className="stat-value">{visits.length}</p>
         </div>
       </div>
 
       <div className="visit-list-container">
-        <h2>受付中 ({activeVisits.length})</h2>
-        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '40px 100px 1fr 100px auto', padding: '0 20px', marginBottom: '8px', color: '#666', fontSize: '0.9em' }}>
-          <div>No</div>
-          <div>No.</div>
-          <div>氏名</div>
-          <div>時間</div>
-          <div>編集</div>
+        <h2>Active Patients</h2>
+        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px auto', gap: '20px', paddingBottom: 10 }}>
+          <div style={{ textAlign: 'center' }}>Queue</div>
+          <div style={{ textAlign: 'center' }}>ID</div>
+          <div>Name</div>
+          <div style={{ textAlign: 'right' }}>Time</div>
+          <div></div>
         </div>
 
         <div className="visit-list-body">
@@ -255,38 +280,35 @@ function App() {
             ))}
           </AnimatePresence>
           {activeVisits.length === 0 && (
-            <div style={{ textAlign: 'center', padding: '40px', color: '#aaa' }}>
-              現在待っている患者さんはいません
+            <div style={{ textAlign: 'center', padding: '60px', color: 'rgba(255,255,255,0.2)' }}>
+              <Users size={48} style={{ marginBottom: 10 }} />
+              <div>No active patients in queue</div>
             </div>
           )}
         </div>
       </div>
 
-      {/* History Section - Keep as table or simplify? Table is fine for history for now. */}
+      {/* History Section */}
       {completedVisits.length > 0 && (
-        <div className="visit-list history" style={{ marginTop: '40px', borderTop: '1px solid #eee', paddingTop: '20px' }}>
-          <h3 style={{ color: '#888' }}>完了/取消履歴 ({completedVisits.length})</h3>
+        <div className="visit-list history">
+          <h3>LOGS ({completedVisits.length})</h3>
           <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', color: '#666' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
-                <tr style={{ textAlign: 'left', borderBottom: '1px solid #eee' }}>
-                  <th style={{ padding: '10px' }}>時間</th>
-                  <th style={{ padding: '10px' }}>氏名</th>
-                  <th style={{ padding: '10px' }}>ステータス</th>
+                <tr>
+                  <th>TIME</th>
+                  <th>NAME</th>
+                  <th>STATUS</th>
                 </tr>
               </thead>
               <tbody>
                 {completedVisits.map((v) => (
-                  <tr key={v.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
-                    <td style={{ padding: '10px' }}>{v.arrivedAt?.toDate ? v.arrivedAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</td>
-                    <td style={{ padding: '10px' }}>{v.name}</td>
-                    <td style={{ padding: '10px' }}>
-                      <span style={{
-                        padding: '4px 8px', borderRadius: '4px', fontSize: '0.8em',
-                        background: v.status === 'paid' ? '#e8f5e9' : '#ffebee',
-                        color: v.status === 'paid' ? '#2e7d32' : '#c62828'
-                      }}>
-                        {v.status === 'paid' ? '会計済' : '取消'}
+                  <tr key={v.id}>
+                    <td>{v.arrivedAt?.toDate ? v.arrivedAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}</td>
+                    <td>{v.name}</td>
+                    <td>
+                      <span className={`status-badge ${v.status === 'paid' ? 'status-paid' : 'status-cancelled'}`}>
+                        {v.status === 'paid' ? 'PAID' : 'CANCELLED'}
                       </span>
                     </td>
                   </tr>
