@@ -4,6 +4,8 @@ import { auth } from './firebase';
 import { initLiff } from './liff';
 import { getPatientByLineId, linkPatient, createVisit } from './services/patientService';
 import type { Patient } from '@reception/shared';
+import { motion, AnimatePresence, type Variants } from 'framer-motion';
+import liff from '@line/liff';
 import './App.css';
 
 function App() {
@@ -21,7 +23,7 @@ function App() {
       try {
         await signInAnonymously(auth);
         const profile = await initLiff();
-        setUser(profile);
+        setUser(profile); // Might be null via redirect, that's fine
         if (profile?.userId) {
           const p = await getPatientByLineId(profile.userId);
           setPatient(p);
@@ -64,66 +66,130 @@ function App() {
     }
   };
 
-  if (loading) return <div className="container">Loading...</div>;
+  // Animation Variants
+  const containerVariants: Variants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+    exit: { opacity: 0, y: -20, transition: { duration: 0.4 } }
+  };
 
-  if (error) {
+  if (loading) {
     return (
-      <div className="container">
-        <div className="error">
-          <h3>エラーが発生しました</h3>
-          <p>{error}</p>
-          <p>LINEアプリから開いているか確認してください。</p>
-          <p>LIFF ID: {import.meta.env.VITE_LIFF_ID}</p>
-          <div style={{ fontSize: '10px', marginTop: '10px', color: '#666' }}>
-            Debug: {auth.currentUser ? `UID: ${auth.currentUser.uid}, Anon: ${auth.currentUser.isAnonymous}` : 'No Auth'}
-          </div>
-        </div>
+      <div className="app-container" style={{ alignItems: 'center' }}>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
+          style={{ width: 40, height: 40, border: '4px solid rgba(255,255,255,0.3)', borderTopColor: '#3b82f6', borderRadius: '50%' }}
+        />
       </div>
     );
   }
 
-  if (!user) return <div className="container">Please open in LINE.</div>;
+  if (error) {
+    return (
+      <div className="app-container">
+        <motion.div className="glass-card" variants={containerVariants} initial="hidden" animate="visible">
+          <h3 style={{ color: '#ef4444' }}>エラーが発生しました</h3>
+          <p>{error}</p>
+          <div style={{ marginTop: 20, fontSize: '0.8rem', opacity: 0.7 }}>
+            環境: {liff.isInClient() ? 'LINE In-App' : 'External Browser'}
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (!user && !loading) {
+    /* Usually initLiff redirects, but if we are here, something missed. */
+    return <div className="app-container"><p>Redirecting to Login...</p></div>;
+  }
 
   return (
-    <div className="container">
-      <h1>受付システム</h1>
-      {error && <div className="error">{error}</div>}
+    <div className="app-container">
+      <AnimatePresence mode='wait'>
+        {!patient ? (
+          <motion.div
+            key="register"
+            className="glass-card"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            exit="exit"
+          >
+            <h1>Welcome</h1>
+            <p>診察券番号を入力して<br />連携を開始してください</p>
 
-      {!patient ? (
-        <div className="card">
-          <h2>診察券をお持ちの方</h2>
-          <p style={{ marginBottom: '20px', color: '#555' }}>お手元の診察券番号を入力してください。<br />(初めての方もこちらから)</p>
-          <input
-            type="text"
-            pattern="\d*"
-            value={inputPatientId}
-            onChange={(e) => setInputPatientId(e.target.value)}
-            placeholder="例: 12345"
-            style={{ fontSize: '20px', textAlign: 'center' }}
-          />
-          <button onClick={handleLink} disabled={registering}>
-            {registering ? '登録中...' : '次へ進む'}
-          </button>
-        </div>
-      ) : (
-        <div className="card">
-          <h2>ようこそ、{patient.name}さん</h2>
-          {checkedIn ? (
-            <div className="success">
-              <h3>受付完了</h3>
-              <p>待合室でお待ちください。</p>
+            <div style={{ width: '100%', margin: '20px 0' }}>
+              <input
+                className="modern-input"
+                type="text"
+                pattern="\d*"
+                inputMode="numeric"
+                value={inputPatientId}
+                onChange={(e) => setInputPatientId(e.target.value)}
+                placeholder="12345"
+              />
             </div>
-          ) : (
-            <button className="primary-btn" onClick={handleCheckIn} disabled={checkingIn} style={{ background: '#007bff' }}>
-              {checkingIn ? '処理中...' : '受付する'}
-            </button>
-          )}
-        </div>
-      )}
 
-      <div className="footer">
-        <p>本日の混雑状況は<a href="/status">こちら</a></p>
-      </div>
+            <motion.button
+              className="glass-btn primary-btn"
+              onClick={handleLink}
+              disabled={registering || !inputPatientId}
+              whileTap={{ scale: 0.95 }}
+            >
+              {registering ? '登録中...' : '連携する'}
+            </motion.button>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="dashboard"
+            className="glass-card"
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            <div style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: '3rem' }}>🏥</div>
+            </div>
+            <h2>{patient.name} 様</h2>
+            <p>こんにちは。本日はどのようなご用件でしょうか？</p>
+
+            {checkedIn ? (
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                className="status-badge success"
+                style={{ marginTop: 20, padding: '15px 30px', fontSize: '1.2rem' }}
+              >
+                ✅ 受付完了
+              </motion.div>
+            ) : (
+              <motion.button
+                className="glass-btn primary-btn"
+                onClick={handleCheckIn}
+                disabled={checkingIn}
+                whileTap={{ scale: 0.95 }}
+                style={{ marginTop: 30, fontSize: '1.3rem', padding: '24px' }}
+              >
+                {checkingIn ? '処理中...' : '受付する'}
+              </motion.button>
+            )}
+
+            {checkedIn && (
+              <p style={{ marginTop: 20, fontSize: '0.9rem' }}>待合室でお待ちください。<br />順番が近づいたらお呼びします。</p>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.div
+        className="footer-link"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+      >
+        <a href="/public-status" target="_blank">現在の混雑状況を確認する</a>
+      </motion.div>
     </div>
   );
 }

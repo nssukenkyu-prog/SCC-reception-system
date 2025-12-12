@@ -1,78 +1,142 @@
-.container {
-  max-width: 100%;
+.app-container {
+  width: 100%;
+  max-width: 480px;
+  /* Mobile width cap */
+  min-height: 100vh;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   margin: 0 auto;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  border-radius: 24px;
+  padding: 40px 30px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  min-height: 100vh;
+  align-items: center;
+  gap: 20px;
 }
 
-.card {
-  background: #fff;
+.glass-card h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.glass-card h2 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #374151;
+  margin: 0;
+}
+
+.glass-card p {
+  color: #6b7280;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* Input Fields - Modern & Clean */
+input.modern-input {
+  width: 100%;
+  padding: 16px 20px;
+  border: 2px solid rgba(229, 231, 235, 0.8);
   border-radius: 16px;
-  padding: 30px 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin: 20px 0;
+  background: rgba(255, 255, 255, 0.9);
+  font-size: 1.2rem;
+  text-align: center;
+  font-weight: 600;
+  color: #1f2937;
+  transition: all 0.2s ease;
+  outline: none;
+  letter-spacing: 0.1em;
 }
 
-input {
-  width: 100%;
-  padding: 12px;
-  margin: 10px 0;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 16px;
-  box-sizing: border-box;
+input.modern-input:focus {
+  border-color: #3b82f6;
+  background: #fff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
-button {
+/* Buttons - "Pressable" feel */
+.glass-btn {
   width: 100%;
-  padding: 16px;
-  background: #06c755;
-  /* LINE Green */
-  color: white;
+  padding: 18px;
   border: none;
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: bold;
+  border-radius: 18px;
+  font-size: 1.1rem;
+  font-weight: 700;
   cursor: pointer;
-  margin-top: 20px;
-  transition: opacity 0.2s;
-}
-
-button:active {
-  opacity: 0.8;
-}
-
-button:disabled {
-  background: #ccc;
-}
-
-.error {
-  color: #d93025;
-  background: #fce8e6;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 10px;
-}
-
-.success {
-  color: #137333;
-  background: #e6f4ea;
-  padding: 20px;
-  border-radius: 8px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  margin-top: 10px;
 }
 
 .primary-btn {
-  font-size: 20px;
-  padding: 20px;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  color: white;
+  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
 }
 
-.footer {
-  margin-top: 40px;
-  font-size: 14px;
-  color: #666;
+.primary-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+}
+
+.secondary-btn {
+  background: rgba(255, 255, 255, 0.8);
+  color: #4b5563;
+  border: 1px solid rgba(209, 213, 219, 0.5);
+}
+
+.glass-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #9ca3af;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Utility */
+.status-badge {
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.status-badge.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.footer-link {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  color: #9ca3af;
+  text-align: center;
+}
+
+.footer-link a {
+  color: #6b7280;
+  text-decoration: underline;
+  text-decoration-color: rgba(107, 114, 128, 0.3);
 }
