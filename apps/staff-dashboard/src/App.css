@@ -40,15 +40,18 @@ body {
 }
 
 /* Layout */
-.dashboard {
+#root {
   width: 100%;
-  /* Ensure it takes full width up to max */
-  max-width: none;
-  /* Slightly reduce for better readability on standard laptops */
+  display: flex;
+  justify-content: center;
+}
+
+.dashboard {
+  width: 94%;
+  max-width: 1800px;
   margin: 0 auto;
-  /* Center horizontally */
-  padding: 40px;
-  /* Increase padding */
+  padding: 40px 0;
+  /* Remove side padding to align with width */
   min-height: 100vh;
   display: flex;
   flex-direction: column;
