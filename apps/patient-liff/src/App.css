@@ -22,25 +22,26 @@ body {
 
 .app-container {
   width: 100%;
-  /* Removed max-width to allow full bleed on mobile if desired, or set very high */
-  max-width: 800px;
   min-height: 100vh;
-  padding: 8px;
-  /* Minimal padding */
+  padding: 0;
+  /* Remove padding to maximize space */
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   margin: 0 auto;
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Digital Card - Physical Replica Theme */
 .digital-card {
-  width: 100%;
-  /* Removed fixed max-width constraint to let it fill container */
+  width: 94vw;
+  /* Force width relative to viewport */
+  max-width: 1000px;
+  /* Cap at reasonable desktop size */
   aspect-ratio: 1.586 / 1;
-  /* Standard Credit Card Ratio */
+  min-height: 300px;
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -50,13 +51,16 @@ body {
   margin: 0 auto;
   position: relative;
   border: 1px solid #ccc;
+  flex-shrink: 0;
+  /* Prevent shrinking in flex container */
 }
 
 .nit-header {
   background: white;
   padding: 10px 20px;
   text-align: right;
-  height: 50px;
+  height: auto;
+  min-height: 50px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -70,9 +74,11 @@ body {
   /* Requested Meiryo */
   font-weight: bold;
   font-style: italic;
-  font-size: 2.0rem;
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  /* Responsive sizing */
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  line-height: 1;
 }
 
 /* .black-bar removed in favor of border-bottom on header */
@@ -82,7 +88,7 @@ body {
 
 .card-body {
   background: linear-gradient(to bottom, #003399 0%, #002266 100%);
-  padding: 8% 8%;
+  padding: 6% 8%;
   /* Increased internal whitespace */
   color: white;
   flex: 1;
@@ -97,9 +103,9 @@ body {
 
 .card-label {
   position: absolute;
-  top: 20px;
-  left: 25px;
-  font-size: 1.1rem;
+  top: 5%;
+  left: 5%;
+  font-size: clamp(1rem, 3vw, 1.5rem);
   /* Enlarged */
   opacity: 0.8;
   letter-spacing: 0.1em;
@@ -115,14 +121,14 @@ body {
 
 .patient-info {
   margin-top: auto;
-  margin-bottom: 10px;
+  margin-bottom: 2%;
 }
 
 .patient-number {
   font-family: 'OCR A Std', 'Monaco', monospace;
-  font-size: 1.8rem;
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
   /* Clearer */
-  margin-bottom: 15px;
+  margin-bottom: 2%;
   /* More space between No and Name */
   opacity: 0.9;
   font-weight: bold;
@@ -130,13 +136,14 @@ body {
 }
 
 .patient-name {
-  font-size: 2.4rem;
-  /* MAXIMIZED */
+  font-size: clamp(2rem, 7vw, 4rem);
+  /* Huge name */
   font-weight: 900;
   letter-spacing: 0.05em;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   /* Stronger shadow for clarity */
-  line-height: 1.2;
+  line-height: 1.1;
+  word-break: keep-all;
 }
 
 .card-footer {
@@ -145,7 +152,7 @@ body {
       #003399 10px,
       #0044aa 10px,
       #0044aa 20px);
-  padding: 12px 16px;
+  padding: 16px;
   text-align: center;
   border-top: 2px solid white;
   display: flex;
@@ -156,8 +163,8 @@ body {
 .footer-text {
   color: white;
   font-weight: bold;
-  font-size: 0.6rem;
-  /* Significantly reduced to fit */
+  font-size: clamp(0.6rem, 2.5vw, 1.2rem);
+  /* Auto-scale text */
   /* Using clamp or viewport units might be safer but 0.6rem is usually safe for this length */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   white-space: normal;
@@ -169,8 +176,10 @@ body {
 
 /* Prominent Check-in Button */
 .checkin-btn {
-  width: 100%;
-  margin-top: 40px;
+  width: 94vw;
+  /* Match card width */
+  max-width: 1000px;
+  margin-top: 30px;
   background: linear-gradient(135deg, #ff4b1f 0%, #ff9068 100%);
   color: white;
   font-weight: 900;
@@ -227,6 +236,8 @@ body {
   font-weight: bold;
   font-size: 1.2rem;
   animation: popIn 0.3s ease-out;
+  width: 94vw;
+  max-width: 1000px;
 }
 
 @keyframes popIn {
