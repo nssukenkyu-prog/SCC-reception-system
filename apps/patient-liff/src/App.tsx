@@ -209,14 +209,7 @@ function App() {
         )}
       </AnimatePresence>
 
-      <motion.div
-        className="footer-link"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
-      >
-        <a href="https://scc-reception-system-public.web.app" target="_blank">[ リアルタイム呼出状況を確認 ]</a>
-      </motion.div>
+
     </div>
   );
 }

@@ -19,11 +19,16 @@ export const subscribeToVisits = (date: string, callback: (visits: Visit[]) => v
     });
 };
 
-export const updateVisitStatus = async (visitId: string, status: 'paid' | 'cancelled') => {
+export const updateVisitStatus = async (visitId: string, status: 'paid' | 'cancelled' | 'active') => {
     const ref = doc(db, 'visits', visitId);
     const updates: any = { status };
     if (status === 'paid') {
         updates.completedAt = serverTimestamp();
+    } else if (status === 'active') {
+        // If restoring to active, we might want to clear completedAt or keep it as history?
+        // Usually clearing it is better to indicate it's not done.
+        updates.completedAt = null;
+        updates.closedBy = null; // Clear closedBy if it was cancelled
     }
     await updateDoc(ref, updates);
 };

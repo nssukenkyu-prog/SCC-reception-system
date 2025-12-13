@@ -5,7 +5,7 @@ import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveV
 import type { Visit } from '@reception/shared';
 import { VisitRow } from './components/VisitRow';
 import { AnimatePresence, motion } from 'framer-motion';
-import { UserPlus, LogOut, Upload, XCircle, Activity, Users } from 'lucide-react';
+import { UserPlus, LogOut, Upload, XCircle, Activity, Users, RotateCcw } from 'lucide-react';
 import './App.css';
 
 function App() {
@@ -299,6 +299,7 @@ function App() {
                   <th>受付時間</th>
                   <th>氏名</th>
                   <th>ステータス</th>
+                  <th>操作</th>
                 </tr>
               </thead>
               <tbody>
@@ -310,6 +311,27 @@ function App() {
                       <span className={`status-badge ${v.status === 'paid' ? 'status-paid' : 'status-cancelled'}`}>
                         {v.status === 'paid' ? 'PAID' : 'CANCELLED'}
                       </span>
+                    </td>
+                    <td>
+                      <button
+                        className="icon-btn-small"
+                        title="受付に戻す"
+                        onClick={() => {
+                          if (window.confirm(`${v.name}様を受付中（Active）に戻しますか？`)) {
+                            updateVisitStatus(v.id!, 'active');
+                          }
+                        }}
+                        style={{
+                          background: 'rgba(255,255,255,0.1)',
+                          border: 'none',
+                          borderRadius: '8px',
+                          padding: '6px',
+                          cursor: 'pointer',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center'
+                        }}
+                      >
+                        <RotateCcw size={16} color="#94a3b8" />
+                      </button>
                     </td>
                   </tr>
                 ))}
