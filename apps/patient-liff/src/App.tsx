@@ -14,6 +14,7 @@ function App() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [inputPatientId, setInputPatientId] = useState('');
+  const [inputName, setInputName] = useState('');
   const [registering, setRegistering] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
@@ -39,11 +40,11 @@ function App() {
   }, []);
 
   const handleLink = async () => {
-    if (!user?.userId || !inputPatientId) return;
+    if (!user?.userId || !inputPatientId || !inputName) return;
     setRegistering(true);
     setError(null);
     try {
-      const p = await linkPatient(inputPatientId, user.userId);
+      const p = await linkPatient(inputPatientId, user.userId, inputName);
       setPatient(p);
     } catch (e: any) {
       setError(e.message);
@@ -125,10 +126,10 @@ function App() {
             <div style={{ marginBottom: 20 }}>
               <div style={{ fontSize: '3rem', filter: 'drop-shadow(0 0 10px #00f0ff)' }}>🪪</div>
             </div>
-            <h1>Identity Link</h1>
-            <p>ACCESS CODE REQUIRED</p>
+            <h1>デジタル診察券 発行</h1>
+            <p>診察券番号と氏名を入力してください</p>
 
-            <div style={{ width: '100%', margin: '30px 0' }}>
+            <div style={{ width: '100%', margin: '20px 0', display: 'flex', flexDirection: 'column', gap: '15px' }}>
               <input
                 className="holo-input"
                 type="text"
@@ -136,18 +137,26 @@ function App() {
                 inputMode="numeric"
                 value={inputPatientId}
                 onChange={(e) => setInputPatientId(e.target.value)}
-                placeholder="00000"
+                placeholder="診察券番号 (例: 1234)"
+              />
+              <input
+                className="holo-input"
+                type="text"
+                value={inputName}
+                onChange={(e) => setInputName(e.target.value)}
+                placeholder="氏名 (例: 山田 太郎)"
+                style={{ textAlign: 'left' }}
               />
             </div>
 
             <motion.button
               className="holo-btn"
               onClick={handleLink}
-              disabled={registering || !inputPatientId}
+              disabled={registering || !inputPatientId || !inputName}
               whileTap={{ scale: 0.95 }}
               whileHover={{ scale: 1.02 }}
             >
-              {registering ? 'PROCESSING...' : 'INITIALIZE LINK'}
+              {registering ? '発行中...' : 'デジタル診察券を作成'}
             </motion.button>
           </motion.div>
         ) : (
@@ -158,13 +167,17 @@ function App() {
             initial="hidden"
             animate="visible"
           >
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 15, marginBottom: 20 }}>
-              <div style={{ width: 10, height: 10, background: '#00f0ff', borderRadius: '50%', boxShadow: '0 0 10px #00f0ff' }}></div>
-              <div style={{ fontFamily: 'monospace', color: '#00f0ff', letterSpacing: '0.2em' }}>CONNECTED</div>
+            {/* Header / Logo Area */}
+            <div style={{ position: 'absolute', top: 20, left: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{ width: 8, height: 8, background: '#00f0ff', borderRadius: '50%', boxShadow: '0 0 10px #00f0ff' }}></div>
+              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>SPORT CURE CENTER</div>
             </div>
 
-            <h2 style={{ fontSize: '2rem', margin: '0 0 10px', color: 'white' }}>{patient.name}</h2>
-            <p style={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}>ID: {patient.patientId}</p>
+            <div style={{ margin: '40px 0 20px', padding: '20px', border: '1px solid rgba(0,240,255,0.3)', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', position: 'relative' }}>
+              <div style={{ position: 'absolute', top: -10, left: 20, background: '#000', padding: '0 10px', fontSize: '0.7rem', color: '#00f0ff' }}>DIGITAL ID CARD</div>
+              <h2 style={{ fontSize: '2rem', margin: '0 0 5px', color: 'white', letterSpacing: '0.05em' }}>{patient.name} <span style={{ fontSize: '1rem' }}>様</span></h2>
+              <p style={{ fontFamily: 'monospace', letterSpacing: '0.1em', fontSize: '1.2rem', color: 'rgba(255,255,255,0.8)', margin: 0 }}>No. {patient.patientId}</p>
+            </div>
 
             {checkedIn ? (
               <motion.div
@@ -173,7 +186,7 @@ function App() {
                 className="success-message"
                 style={{ marginTop: 30 }}
               >
-                ✔ ENTRY AUTHORIZED
+                ✔ 受付完了
               </motion.div>
             ) : (
               <motion.button
@@ -183,13 +196,13 @@ function App() {
                 whileTap={{ scale: 0.95 }}
                 style={{ marginTop: 40 }}
               >
-                {checkingIn ? 'verifying...' : 'CHECK-IN NOW'}
+                {checkingIn ? '処理中...' : '受付する (CHECK-IN)'}
               </motion.button>
             )}
 
             {checkedIn && (
               <p style={{ marginTop: 20, fontSize: '0.8rem', color: '#0f0', opacity: 0.8 }}>
-                Please wait in the staging area.
+                待合室でお待ちください。<br />呼び出し状況は下のリンクから確認できます。
               </p>
             )}
           </motion.div>
@@ -202,7 +215,7 @@ function App() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
       >
-        <a href="/public-status" target="_blank">[ VIEW LIVE MONITOR ]</a>
+        <a href="https://scc-reception-system-public.web.app" target="_blank">[ リアルタイム呼出状況を確認 ]</a>
       </motion.div>
     </div>
   );

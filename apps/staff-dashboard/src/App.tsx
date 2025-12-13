@@ -120,14 +120,14 @@ function App() {
           <form onSubmit={handleLogin}>
             <input
               type="email"
-              placeholder="Operator ID"
+              placeholder="オペレーターID"
               className="login-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <input
               type="password"
-              placeholder="Access Key"
+              placeholder="アクセスキー"
               className="login-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -138,7 +138,7 @@ function App() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              Initialize Section
+              セッション開始
             </motion.button>
           </form>
           {errorMsg && <p style={{ color: '#f472b6', marginTop: 20 }}>{errorMsg}</p>}
@@ -158,16 +158,16 @@ function App() {
           SCC Reception <span style={{ opacity: 0.4, fontWeight: 400, marginLeft: 10 }}>Live Command</span>
         </h1>
         <div className="controls" style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV Import">
+          <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV一括登録">
             <Upload size={22} />
           </button>
-          <button onClick={() => setShowProxyForm(!showProxyForm)} className="icon-btn-large" title="Proxy Entry">
+          <button onClick={() => setShowProxyForm(!showProxyForm)} className="icon-btn-large" title="代行受付">
             <UserPlus size={22} />
           </button>
-          <button onClick={handleCloseAll} className="icon-btn-large danger" title="Close All">
+          <button onClick={handleCloseAll} className="icon-btn-large danger" title="全件締め処理">
             <XCircle size={22} />
           </button>
-          <button onClick={handleLogout} className="icon-btn-large" title="Logout">
+          <button onClick={handleLogout} className="icon-btn-large" title="ログアウト">
             <LogOut size={22} />
           </button>
         </div>
@@ -247,22 +247,22 @@ function App() {
 
       <div className="stats" style={{ gridTemplateColumns: '1fr 1fr' }}>
         <div className="stat-card active">
-          <h3>Waiting Queue</h3>
+          <h3>待ち人数 (Queue)</h3>
           <p className="stat-value">{activeVisits.length}</p>
         </div>
         <div className="stat-card">
-          <h3>Total Visits</h3>
+          <h3>本日の総来院数 (Total)</h3>
           <p className="stat-value">{visits.length}</p>
         </div>
       </div>
 
       <div className="visit-list-container">
-        <h2>Active Patients</h2>
+        <h2>受付中 (Active Patients)</h2>
         <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px auto', gap: '20px', paddingBottom: 10 }}>
-          <div style={{ textAlign: 'center' }}>Queue</div>
-          <div style={{ textAlign: 'center' }}>ID</div>
-          <div>Name</div>
-          <div style={{ textAlign: 'right' }}>Time</div>
+          <div style={{ textAlign: 'center' }}>No.</div>
+          <div style={{ textAlign: 'center' }}>診察券</div>
+          <div>氏名</div>
+          <div style={{ textAlign: 'right' }}>受付時間</div>
           <div></div>
         </div>
 
@@ -282,7 +282,7 @@ function App() {
           {activeVisits.length === 0 && (
             <div style={{ textAlign: 'center', padding: '60px', color: 'rgba(255,255,255,0.2)' }}>
               <Users size={48} style={{ marginBottom: 10 }} />
-              <div>No active patients in queue</div>
+              <div>現在の待ち人数はいません</div>
             </div>
           )}
         </div>
@@ -291,14 +291,14 @@ function App() {
       {/* History Section */}
       {completedVisits.length > 0 && (
         <div className="visit-list history">
-          <h3>LOGS ({completedVisits.length})</h3>
+          <h3>完了・取消履歴 ({completedVisits.length})</h3>
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr>
-                  <th>TIME</th>
-                  <th>NAME</th>
-                  <th>STATUS</th>
+                  <th>受付時間</th>
+                  <th>氏名</th>
+                  <th>ステータス</th>
                 </tr>
               </thead>
               <tbody>

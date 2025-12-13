@@ -57,7 +57,7 @@ function App() {
   return (
     <div className="monitor-container">
       <header>
-        <h1>Reception Status</h1>
+        <h1>受付状況</h1>
         <div className="clock">
           {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
@@ -83,7 +83,7 @@ function App() {
 
         {/* Right: Queue Visual */}
         <div className="list-panel">
-          <div className="list-header">Calling List</div>
+          <div className="list-header">お呼び出し状況</div>
           <div style={{ flex: 1, overflow: 'hidden' }}>
             {activeVisits.slice(0, 5).map((v, i) => (
               <div key={i} className="status-row active">
@@ -111,7 +111,7 @@ function App() {
       <footer>
         <div>SCC Reception Monitor System • Updating in Real-time</div>
       </footer>
-    </div>
+    </div >
   );
 }
 

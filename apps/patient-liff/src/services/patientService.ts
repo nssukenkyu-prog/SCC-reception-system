@@ -9,18 +9,18 @@ export const getPatientByLineId = async (lineUserId: string): Promise<Patient | 
     return { ...snapshot.docs[0].data(), patientId: snapshot.docs[0].id } as Patient;
 };
 
-export const linkPatient = async (patientId: string, lineUserId: string): Promise<Patient> => {
+export const linkPatient = async (patientId: string, lineUserId: string, name: string): Promise<Patient> => {
     const patientRef = doc(db, 'patients', patientId);
     const patientSnap = await getDoc(patientRef);
 
     if (!patientSnap.exists()) {
-        // Create new patient if not exists (Self-registration)
+        // Create new patient with name
         const newPatient: Patient = {
             patientId,
-            name: 'ゲスト', // Default name, maybe ask user? But for now simple.
-            kana: 'ゲスト',
+            name: name,
+            kana: name, // Fallback for kana
             lineUserId,
-            firebaseUid: auth.currentUser?.uid, // Store Firebase UID for security rules
+            firebaseUid: auth.currentUser?.uid,
             linkedAt: serverTimestamp()
         };
         await setDoc(patientRef, newPatient);
@@ -28,16 +28,21 @@ export const linkPatient = async (patientId: string, lineUserId: string): Promis
     }
 
     const data = patientSnap.data() as Patient;
-    if (data.lineUserId) {
+
+    // Allow re-linking or updating name if no lineUserId or if matching (though logic says if lineUserId exists, error)
+    // Actually, user might change devices. This check was strict. 
+    // For now, if lineUserId exists and is different, error.
+    if (data.lineUserId && data.lineUserId !== lineUserId) {
         throw new Error('この診察券番号は既に他のLINEアカウントと連携されています。');
     }
 
     await updateDoc(patientRef, {
         lineUserId,
+        name: name, // Update name as requested
         linkedAt: serverTimestamp()
     });
 
-    return { ...data, lineUserId, patientId };
+    return { ...data, lineUserId, name, patientId };
 };
 
 export const createVisit = async (patient: Patient): Promise<void> => {
