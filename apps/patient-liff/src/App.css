@@ -22,9 +22,11 @@ body {
 
 .app-container {
   width: 100%;
-  max-width: 600px;
+  /* Removed max-width to allow full bleed on mobile if desired, or set very high */
+  max-width: 800px;
   min-height: 100vh;
-  padding: 16px;
+  padding: 8px;
+  /* Minimal padding */
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -37,8 +39,8 @@ body {
 .digital-card {
   width: 100%;
   /* Removed fixed max-width constraint to let it fill container */
-  aspect-ratio: 1.618 / 1;
-  /* Approximate credit card ratio */
+  aspect-ratio: 1.586 / 1;
+  /* Standard Credit Card Ratio */
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -52,33 +54,36 @@ body {
 
 .nit-header {
   background: white;
-  padding: 10px 15px;
+  padding: 10px 20px;
   text-align: right;
-  height: 40px;
+  height: 50px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  border-bottom: 5px solid #1a1a1a;
+  /* Merged Black Bar into Border for cleaner layout */
 }
 
 .nit-logo {
   color: #003399;
   /* Nittaidai Blue approx */
-  font-family: 'Arial', sans-serif;
+  font-family: 'Arial Black', 'Arial', sans-serif;
   font-weight: 900;
   font-style: italic;
-  font-size: 1.4rem;
+  font-size: 2.0rem;
+  /* Enlarged */
   letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
+/* .black-bar removed in favor of border-bottom on header */
 .black-bar {
-  height: 25px;
-  background: #1a1a1a;
-  width: 100%;
+  display: none;
 }
 
 .card-body {
   background: linear-gradient(to bottom, #003399 0%, #002266 100%);
-  padding: 5% 5%;
+  padding: 4% 6%;
   color: white;
   flex: 1;
   /* Take remaining space */
@@ -93,10 +98,12 @@ body {
 .card-label {
   position: absolute;
   top: 15px;
-  left: 15px;
-  font-size: 0.8rem;
+  left: 20px;
+  font-size: 1.1rem;
+  /* Enlarged */
   opacity: 0.8;
   letter-spacing: 0.1em;
+  font-weight: bold;
 }
 
 .card-title {
@@ -108,20 +115,25 @@ body {
 
 .patient-info {
   margin-top: auto;
+  margin-bottom: 10px;
 }
 
 .patient-number {
   font-family: 'OCR A Std', 'Monaco', monospace;
-  font-size: 1.2rem;
+  font-size: 1.6rem;
+  /* Enlarged */
   margin-bottom: 5px;
   opacity: 0.9;
+  font-weight: bold;
 }
 
 .patient-name {
-  font-size: 1.8rem;
-  font-weight: bold;
+  font-size: 2.4rem;
+  /* MAXIMIZED */
+  font-weight: 900;
   letter-spacing: 0.05em;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
 }
 
 .card-footer {
@@ -130,7 +142,7 @@ body {
       #003399 10px,
       #0044aa 10px,
       #0044aa 20px);
-  padding: 12px;
+  padding: 16px;
   text-align: center;
   border-top: 2px solid white;
 }
@@ -138,7 +150,8 @@ body {
 .footer-text {
   color: white;
   font-weight: bold;
-  font-size: 0.8rem;
+  font-size: 1.0rem;
+  /* Enlarged */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
   white-space: nowrap;
   overflow: hidden;
