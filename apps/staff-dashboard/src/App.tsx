@@ -27,11 +27,19 @@ function App() {
     return () => unsubscribe();
   }, []);
 
+  const [selectedDate, setSelectedDate] = useState(() => {
+    return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
+  });
+
   useEffect(() => {
-    if (user) {
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
-      console.log("Subscribing to visits for:", today);
-      const unsub = subscribeToVisits(today,
+    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    if (user && selectedDate) {
+      console.log("Subscribing to visits for:", selectedDate);
+      const unsub = subscribeToVisits(selectedDate,
         (data) => {
           setVisits(data);
           setErrorMsg('');
@@ -40,7 +48,7 @@ function App() {
       );
       return () => unsub();
     }
-  }, [user]);
+  }, [user, selectedDate]);
 
   // Auto-fill proxy name
   useEffect(() => {
@@ -171,6 +179,13 @@ function App() {
           SCC Reception <span style={{ opacity: 0.4, fontWeight: 400, marginLeft: 10 }}>Live Command</span>
         </h1>
         <div className="controls" style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
+          <input
+            type="date"
+            className="cyber-input"
+            style={{ padding: '8px', fontSize: '1rem', width: 'auto', height: '44px' }}
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+          />
           <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV一括登録">
             <Upload size={28} />
           </button>
