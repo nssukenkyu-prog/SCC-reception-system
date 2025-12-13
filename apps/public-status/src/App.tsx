@@ -69,17 +69,17 @@ function App() {
 
       <div className="monitor-main" style={{ justifyContent: 'center' }}>
         {/* Stats Only - Centered and Big */}
-        <div className="stats-panel" style={{ width: '100%', maxWidth: '1200px', flexDirection: 'row', gap: 60, justifyContent: 'center' }}>
-          <div className="stat-box" style={{ flex: 1, height: '400px' }}>
+        <div className="stats-panel">
+          <div className="stat-box">
             <div className="stat-label">キュアセンター内の人数</div>
-            <div className="stat-value" style={{ fontSize: '10rem' }}>
-              {activeCount}<span className="stat-unit" style={{ fontSize: '3rem' }}>人</span>
+            <div className="stat-value count-value">
+              {activeCount}<span className="stat-unit">人</span>
             </div>
           </div>
 
-          <div className="stat-box wait-time" style={{ flex: 1, height: '400px' }}>
+          <div className="stat-box wait-time">
             <div className="stat-label">推定待ち時間</div>
-            <div className="stat-value" style={{ fontSize: '3.5rem', lineHeight: '1.3', padding: '0 20px' }}>
+            <div className="stat-value wait-value">
               {waitDisplay}
             </div>
           </div>
