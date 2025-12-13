@@ -77,7 +77,7 @@ export const createVisit = async (patient: Patient): Promise<void> => {
             date: today,
             patientId: patient.patientId,
             name: patient.name,
-            lineUserId: patient.lineUserId,
+            lineUserId: patient.lineUserId || undefined,
             status: 'active',
             arrivedAt: serverTimestamp(),
             createdBy: 'patient'

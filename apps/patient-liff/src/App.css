@@ -33,138 +33,185 @@ body {
   position: relative;
 }
 
-/* Holographic Card */
-.holo-card {
-  background: var(--glass-panel);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--glass-border);
-  box-shadow:
-    0 0 20px rgba(0, 240, 255, 0.1),
-    inset 0 0 20px rgba(0, 240, 255, 0.05);
-  border-radius: 20px;
-  padding: 40px 30px;
+/* Digital Card - Physical Replica Theme */
+.digital-card {
   width: 100%;
+  max-width: 400px;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  background: white;
+  display: flex;
+  flex-direction: column;
+  margin: 0 auto;
+  position: relative;
+  border: 1px solid #ccc;
+}
+
+.nit-header {
+  background: white;
+  padding: 10px 15px;
+  text-align: right;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.nit-logo {
+  color: #003399;
+  /* Nittaidai Blue approx */
+  font-family: 'Arial', sans-serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 1.4rem;
+  letter-spacing: 0.05em;
+}
+
+.black-bar {
+  height: 25px;
+  background: #1a1a1a;
+  width: 100%;
+}
+
+.card-body {
+  background: linear-gradient(to bottom, #003399 0%, #002266 100%);
+  padding: 30px 20px;
+  color: white;
+  min-height: 180px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Watermark/Texture for card body could go here */
+
+.card-label {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size: 0.8rem;
+  opacity: 0.8;
+  letter-spacing: 0.1em;
+}
+
+.card-title {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+
+.patient-info {
+  margin-top: auto;
+}
+
+.patient-number {
+  font-family: 'OCR A Std', 'Monaco', monospace;
+  font-size: 1.2rem;
+  margin-bottom: 5px;
+  opacity: 0.9;
+}
+
+.patient-name {
+  font-size: 1.8rem;
+  font-weight: bold;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.card-footer {
+  background: repeating-linear-gradient(-45deg,
+      #003399,
+      #003399 10px,
+      #0044aa 10px,
+      #0044aa 20px);
+  padding: 12px;
   text-align: center;
+  border-top: 2px solid white;
+}
+
+.footer-text {
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Prominent Check-in Button */
+.checkin-btn {
+  width: 100%;
+  margin-top: 40px;
+  background: linear-gradient(135deg, #ff4b1f 0%, #ff9068 100%);
+  color: white;
+  font-weight: 900;
+  font-size: 1.5rem;
+  padding: 24px;
+  border: none;
+  border-radius: 50px;
+  /* Pill shape */
+  box-shadow: 0 10px 20px rgba(255, 75, 31, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   position: relative;
   overflow: hidden;
 }
 
-/* Scanline effect */
-.holo-card::before {
+.checkin-btn::after {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
+  width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, transparent 40%, rgba(0, 240, 255, 0.1) 50%, transparent 60%);
-  background-size: 100% 300%;
-  animation: scanline 8s linear infinite;
+  background: linear-gradient(rgba(255, 255, 255, 0.2), transparent);
   pointer-events: none;
 }
 
-@keyframes scanline {
-  0% {
-    background-position: 0% 0%;
-  }
-
-  100% {
-    background-position: 0% 100%;
-  }
+.checkin-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 5px 10px rgba(255, 75, 31, 0.4);
 }
 
-.holo-card h1 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  margin: 0 0 10px;
-  color: #fff;
-  text-shadow: 0 0 10px var(--holo-blue);
-}
-
-.holo-card p {
-  color: rgba(255, 255, 255, 0.7);
-  font-size: 0.9rem;
-  margin-bottom: 30px;
-}
-
-/* Input Fields */
-input.holo-input {
-  width: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  border: 1px solid var(--holo-blue);
-  border-radius: 8px;
-  padding: 16px;
-  color: var(--holo-blue);
-  font-size: 1.5rem;
-  text-align: center;
-  font-family: monospace;
-  letter-spacing: 0.2em;
-  outline: none;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
-  transition: all 0.3s;
-}
-
-input.holo-input:focus {
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
-  background: rgba(0, 240, 255, 0.05);
-}
-
-input.holo-input::placeholder {
-  color: rgba(0, 240, 255, 0.3);
-}
-
-/* Buttons */
-.holo-btn {
-  width: 100%;
-  margin-top: 30px;
-  background: var(--holo-blue);
-  color: #000;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 18px;
-  border: none;
-  border-radius: 4px;
-  /* Sharp edges for sci-fi look */
-  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: all 0.2s;
-  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
-}
-
-.holo-btn:disabled {
-  background: #333;
-  color: #666;
+.checkin-btn:disabled {
+  background: #555;
   box-shadow: none;
+  color: #888;
   cursor: not-allowed;
 }
 
-.holo-btn:active {
-  transform: scale(0.98);
-  background: #fff;
-  box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
-}
-
-/* Success State */
+/* Success State Override */
 .success-message {
-  border: 1px solid var(--holo-green, #0f0);
-  background: rgba(0, 255, 0, 0.05);
-  color: #0f0;
+  margin-top: 30px;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid #4ade80;
+  color: #4ade80;
   padding: 20px;
-  border-radius: 8px;
-  text-shadow: 0 0 5px #0f0;
+  border-radius: 12px;
+  text-align: center;
   font-weight: bold;
-  letter-spacing: 0.05em;
+  font-size: 1.2rem;
+  animation: popIn 0.3s ease-out;
 }
 
-.footer-link a {
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+@keyframes popIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }

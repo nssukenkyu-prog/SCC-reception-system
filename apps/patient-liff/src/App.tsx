@@ -247,21 +247,36 @@ function App() {
         ) : (
           <motion.div
             key="dashboard"
-            className="holo-card"
+            className="digital-card-container"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
+            style={{ width: '100%', maxWidth: 400 }}
           >
-            {/* Header / Logo Area */}
-            <div style={{ position: 'absolute', top: 20, left: 20, display: 'flex', alignItems: 'center', gap: 10 }}>
-              <div style={{ width: 8, height: 8, background: '#00f0ff', borderRadius: '50%', boxShadow: '0 0 10px #00f0ff' }}></div>
-              <div style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.7)', letterSpacing: '0.1em' }}>SPORT CURE CENTER</div>
-            </div>
+            {/* Digital Card Replica */}
+            <div className="digital-card">
+              {/* Top White Bar */}
+              <div className="nit-header">
+                <div className="nit-logo">NITTAIDAI</div>
+              </div>
 
-            <div style={{ margin: '40px 0 20px', padding: '20px', border: '1px solid rgba(0,240,255,0.3)', borderRadius: '12px', background: 'rgba(0,0,0,0.3)', position: 'relative' }}>
-              <div style={{ position: 'absolute', top: -10, left: 20, background: '#000', padding: '0 10px', fontSize: '0.7rem', color: '#00f0ff' }}>DIGITAL ID CARD</div>
-              <h2 style={{ fontSize: '2rem', margin: '0 0 5px', color: 'white', letterSpacing: '0.05em' }}>{patient.name} <span style={{ fontSize: '1rem' }}>様</span></h2>
-              <p style={{ fontFamily: 'monospace', letterSpacing: '0.1em', fontSize: '1.2rem', color: 'rgba(255,255,255,0.8)', margin: 0 }}>No. {patient.patientId}</p>
+              {/* Black Separator */}
+              <div className="black-bar"></div>
+
+              {/* Main Blue Body */}
+              <div className="card-body">
+                <div className="card-label">E-診察券</div>
+
+                <div className="patient-info">
+                  <div className="patient-number">No. {patient.patientId}</div>
+                  <div className="patient-name">{patient.name} <span style={{ fontSize: '1rem', fontWeight: 'normal' }}>様</span></div>
+                </div>
+              </div>
+
+              {/* Striped Footer */}
+              <div className="card-footer">
+                <div className="footer-text">日本体育大学スポーツキュアセンター横浜・健志台接骨院</div>
+              </div>
             </div>
 
             {checkedIn ? (
@@ -275,13 +290,13 @@ function App() {
               </motion.div>
             ) : (
               <motion.button
-                className="holo-btn"
+                className="checkin-btn"
                 onClick={handleCheckIn}
                 disabled={checkingIn}
                 whileTap={{ scale: 0.95 }}
                 style={{ marginTop: 40 }}
               >
-                {checkingIn ? '処理中...' : '受付する (CHECK-IN)'}
+                {checkingIn ? '処理中...' : <>受付する <span style={{ fontSize: '1rem', opacity: 0.8, marginLeft: 5 }}>(CHECK-IN)</span></>}
               </motion.button>
             )}
 
