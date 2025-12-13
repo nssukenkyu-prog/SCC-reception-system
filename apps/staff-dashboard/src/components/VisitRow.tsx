@@ -68,6 +68,12 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                 dragConstraints={{ left: 0, right: 0 }}
                 dragElastic={0.6}
                 onDragEnd={handleDragEnd}
+                onClick={() => {
+                    // Only toggle if not dragging (x is near 0)
+                    if (Math.abs(x.get()) < 5 && visit.id) {
+                        onToggleReceipt(visit.id, visit.receiptStatus || false);
+                    }
+                }}
                 whileTap={{ cursor: 'grabbing', scale: 0.98 }}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -105,12 +111,8 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                     </div>
 
                     {/* 5. Receipt Status (New) */}
-                    <div style={{ display: 'flex', justifyContent: 'center' }} onPointerDown={(e) => e.stopPropagation()}>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
                         <button
-                            onClick={(e) => {
-                                e.stopPropagation(); // Prevent drag/list click
-                                if (visit.id) onToggleReceipt(visit.id, visit.receiptStatus || false);
-                            }}
                             style={{
                                 width: 40, height: 40,
                                 borderRadius: '8px',
@@ -119,7 +121,8 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                                 color: visit.receiptStatus ? '#4ade80' : 'transparent',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
                                 cursor: 'pointer',
-                                transition: 'all 0.2s'
+                                transition: 'all 0.2s',
+                                pointerEvents: 'none' // Let parent handle click
                             }}
                         >
                             <CheckCircle size={24} />
