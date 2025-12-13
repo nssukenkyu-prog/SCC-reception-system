@@ -22,9 +22,9 @@ body {
 
 .app-container {
   width: 100%;
-  max-width: 480px;
+  max-width: 600px;
   min-height: 100vh;
-  padding: 24px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -36,7 +36,9 @@ body {
 /* Digital Card - Physical Replica Theme */
 .digital-card {
   width: 100%;
-  max-width: 400px;
+  /* Removed fixed max-width constraint to let it fill container */
+  aspect-ratio: 1.618 / 1;
+  /* Approximate credit card ratio */
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
@@ -76,9 +78,10 @@ body {
 
 .card-body {
   background: linear-gradient(to bottom, #003399 0%, #002266 100%);
-  padding: 30px 20px;
+  padding: 5% 5%;
   color: white;
-  min-height: 180px;
+  flex: 1;
+  /* Take remaining space */
   position: relative;
   display: flex;
   flex-direction: column;
