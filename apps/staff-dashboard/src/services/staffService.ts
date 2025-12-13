@@ -138,3 +138,12 @@ export const importPatients = async (csvText: string) => {
     }
     return lines.length;
 };
+
+export const getPatientById = async (patientId: string): Promise<{ name: string } | null> => {
+    const ref = doc(db, 'patients', patientId);
+    const snap = await import('firebase/firestore').then(m => m.getDoc(ref));
+    if (snap.exists()) {
+        return { name: snap.data().name };
+    }
+    return null;
+};

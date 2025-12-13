@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
-import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveVisits, updatePatientName, importPatients } from './services/staffService';
+import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveVisits, updatePatientName, importPatients, getPatientById } from './services/staffService';
 import type { Visit } from '@reception/shared';
 import { VisitRow } from './components/VisitRow';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -16,7 +16,7 @@ function App() {
   const [errorMsg, setErrorMsg] = useState<string>('');
   const [proxyName, setProxyName] = useState('');
   const [proxyId, setProxyId] = useState('');
-  const [showProxyForm, setShowProxyForm] = useState(false);
+  // const [showProxyForm, setShowProxyForm] = useState(true); // Always visible now
   const [editingPatient, setEditingPatient] = useState<{ id: string, name: string } | null>(null);
   const [newName, setNewName] = useState('');
   const [showImportModal, setShowImportModal] = useState(false);
@@ -42,6 +42,18 @@ function App() {
     }
   }, [user]);
 
+  // Auto-fill proxy name
+  useEffect(() => {
+    if (proxyId.length >= 1) {
+      const check = async () => {
+        const p = await getPatientById(proxyId);
+        if (p) setProxyName(p.name);
+      };
+      const timer = setTimeout(check, 500); // Debounce
+      return () => clearTimeout(timer);
+    }
+  }, [proxyId]);
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -60,7 +72,8 @@ function App() {
       await createProxyVisit(proxyName, proxyId);
       setProxyName('');
       setProxyId('');
-      setShowProxyForm(false);
+      setProxyId('');
+      // setShowProxyForm(false);
     } catch (error: any) {
       alert(error.message);
     }
@@ -157,21 +170,51 @@ function App() {
           <Activity size={28} style={{ marginRight: 10, color: '#38bdf8' }} />
           SCC Reception <span style={{ opacity: 0.4, fontWeight: 400, marginLeft: 10 }}>Live Command</span>
         </h1>
-        <div className="controls" style={{ display: 'flex', gap: '10px' }}>
+        <div className="controls" style={{ display: 'flex', gap: '15px', alignItems: 'center' }}>
           <button onClick={() => setShowImportModal(true)} className="icon-btn-large" title="CSV一括登録">
-            <Upload size={22} />
+            <Upload size={28} />
           </button>
-          <button onClick={() => setShowProxyForm(!showProxyForm)} className="icon-btn-large" title="代行受付">
-            <UserPlus size={22} />
-          </button>
+          {/* Proxy toggle removed, always visible layout */}
           <button onClick={handleCloseAll} className="icon-btn-large danger" title="全件締め処理">
-            <XCircle size={22} />
+            <XCircle size={28} />
           </button>
           <button onClick={handleLogout} className="icon-btn-large" title="ログアウト">
-            <LogOut size={22} />
+            <LogOut size={28} />
           </button>
         </div>
       </header>
+
+      {/* Always Visible Proxy Check-in Bar */}
+      <motion.div
+        className="proxy-bar"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+      >
+        <div className="proxy-label">
+          <UserPlus size={20} color="#00f0ff" />
+          <span>QUICK CHECK-IN</span>
+        </div>
+        <form onSubmit={handleProxySubmit} className="proxy-inputs">
+          <div className="input-group">
+            <span className="input-prefix">ID</span>
+            <input
+              placeholder="診察券番号"
+              value={proxyId}
+              onChange={e => setProxyId(e.target.value)}
+              className="cyber-input"
+            />
+          </div>
+          <div className="input-group">
+            <input
+              placeholder="氏名 (Auto)"
+              value={proxyName}
+              onChange={e => setProxyName(e.target.value)}
+              className="cyber-input"
+            />
+          </div>
+          <button type="submit" className="cyber-btn">CHECK-IN</button>
+        </form>
+      </motion.div>
 
       {errorMsg && (
         <div className="error-banner" style={{ background: '#ffebee', color: '#c62828', padding: '1rem', margin: '1rem' }}>
@@ -179,24 +222,7 @@ function App() {
         </div>
       )}
 
-      {showProxyForm && (
-        <div className="proxy-form card">
-          <h3>代行受付</h3>
-          <form onSubmit={handleProxySubmit}>
-            <input
-              placeholder="診察券番号"
-              value={proxyId}
-              onChange={e => setProxyId(e.target.value)}
-            />
-            <input
-              placeholder="氏名"
-              value={proxyName}
-              onChange={e => setProxyName(e.target.value)}
-            />
-            <button type="submit">登録</button>
-          </form>
-        </div>
-      )}
+
 
       {editingPatient && (
         <div className="modal-overlay">
@@ -251,8 +277,8 @@ function App() {
           <p className="stat-value">{activeVisits.length}</p>
         </div>
         <div className="stat-card">
-          <h3>本日の総来院数 (Total)</h3>
-          <p className="stat-value">{visits.length}</p>
+          <h3>本日の総来院数 (Visual Visits)</h3>
+          <p className="stat-value">{visits.filter(v => v.status !== 'cancelled').length}</p>
         </div>
       </div>
 
