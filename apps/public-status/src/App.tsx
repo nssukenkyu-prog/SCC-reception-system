@@ -83,7 +83,6 @@ function App() {
 
         {/* Right: Queue Visual */}
         <div className="list-panel">
-          <div className="list-header">お呼び出し状況</div>
           <div style={{ flex: 1, overflow: 'hidden' }}>
             {activeVisits.slice(0, 5).map((v, i) => (
               <div key={i} className="status-row active">
@@ -101,7 +100,6 @@ function App() {
             )}
             {activeVisits.length === 0 && (
               <div style={{ textAlign: 'center', color: '#64748b', marginTop: 40, fontSize: '1.5rem' }}>
-                お待ちの方はいません
               </div>
             )}
           </div>
