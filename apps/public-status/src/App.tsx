@@ -61,7 +61,7 @@ function App() {
   return (
     <div className="monitor-container">
       <header>
-        <h1>受付状況</h1>
+        <h1>現在の混雑状況</h1>
         <div className="clock">
           {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
