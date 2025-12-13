@@ -1,4 +1,4 @@
-/* Staff Dashboard - Ultimate Dark Glass Theme */
+/* Staff Dashboard - Ultimate Dark Glass Theme Fixes */
 :root {
   --bg-dark: #0f172a;
   --glass-bg: rgba(30, 41, 59, 0.7);
@@ -9,7 +9,8 @@
   --accent-purple: #c084fc;
   --accent-green: #4ade80;
   --accent-red: #f472b6;
-  /* Gentle pink/red */
+  color-scheme: dark;
+  /* Forces browser default inputs to be dark */
 }
 
 body {
@@ -17,6 +18,8 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   background-color: var(--bg-dark);
   background: radial-gradient(circle at 0% 0%, #1e1b4b 0%, #0f172a 100%);
+  background-attachment: fixed;
+  /* Fix background to viewport */
   color: var(--text-primary);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
@@ -245,6 +248,7 @@ header h1 {
 .visit-list.history {
   margin-top: 60px;
   background: var(--glass-bg);
+  /* Ensure glass */
   backdrop-filter: blur(10px);
   border-radius: 24px;
   padding: 30px;
@@ -259,14 +263,23 @@ header h1 {
   margin-bottom: 20px;
 }
 
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
 table tr {
   border-bottom: 1px solid var(--glass-border);
+  background: transparent;
+  /* Fix white flashes */
 }
 
 table td,
 table th {
   padding: 15px;
   color: var(--text-secondary);
+  background: transparent;
+  /* Fix white flashes */
 }
 
 table tbody tr:hover {
@@ -294,16 +307,66 @@ table tbody tr:hover {
 .modal-overlay {
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(5px);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
 }
 
 .modal {
   background: #1e293b;
+  /* Dark Slate fallback */
+  background: rgba(30, 41, 59, 0.95);
   border: 1px solid var(--glass-border);
+  color: white;
+  padding: 30px;
+  border-radius: 24px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.modal h3 {
+  margin-top: 0;
   color: white;
 }
 
 .modal input {
+  width: 100%;
+  padding: 16px;
+  margin-bottom: 20px;
   background: rgba(0, 0, 0, 0.3);
   border: 1px solid var(--glass-border);
   color: white;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.modal-actions button {
+  flex: 1;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.modal-actions button[type="submit"] {
+  background: var(--accent-blue);
+  color: white;
+}
+
+.modal-actions button.secondary {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ccc;
 }

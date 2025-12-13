@@ -1,142 +1,170 @@
+/* Patient App - Holographic Identity Theme */
+:root {
+  --bg-dark: #000000;
+  --holo-blue: #00f0ff;
+  --holo-pink: #ff003c;
+  --glass-panel: rgba(20, 20, 30, 0.6);
+  --glass-border: rgba(0, 240, 255, 0.2);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: black;
+  background-image:
+    linear-gradient(rgba(0, 240, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 240, 255, 0.03) 1px, transparent 1px);
+  background-size: 30px 30px;
+  color: #fff;
+  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  overflow-x: hidden;
+}
+
 .app-container {
   width: 100%;
   max-width: 480px;
-  /* Mobile width cap */
   min-height: 100vh;
   padding: 24px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   margin: 0 auto;
+  position: relative;
 }
 
-/* Glassmorphism Card */
-.glass-card {
-  background: rgba(255, 255, 255, 0.75);
+/* Holographic Card */
+.holo-card {
+  background: var(--glass-panel);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.4);
-  border-radius: 24px;
+  border: 1px solid var(--glass-border);
+  box-shadow:
+    0 0 20px rgba(0, 240, 255, 0.1),
+    inset 0 0 20px rgba(0, 240, 255, 0.05);
+  border-radius: 20px;
   padding: 40px 30px;
-  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-}
-
-.glass-card h1 {
-  font-size: 1.8rem;
-  font-weight: 800;
-  color: #1f2937;
-  margin: 0;
-  letter-spacing: -0.02em;
-}
-
-.glass-card h2 {
-  font-size: 1.4rem;
-  font-weight: 700;
-  color: #374151;
-  margin: 0;
-}
-
-.glass-card p {
-  color: #6b7280;
-  font-size: 1rem;
-  line-height: 1.6;
-  margin: 0;
-}
-
-/* Input Fields - Modern & Clean */
-input.modern-input {
   width: 100%;
-  padding: 16px 20px;
-  border: 2px solid rgba(229, 231, 235, 0.8);
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.9);
-  font-size: 1.2rem;
   text-align: center;
-  font-weight: 600;
-  color: #1f2937;
-  transition: all 0.2s ease;
-  outline: none;
-  letter-spacing: 0.1em;
-}
-
-input.modern-input:focus {
-  border-color: #3b82f6;
-  background: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
-}
-
-/* Buttons - "Pressable" feel */
-.glass-btn {
-  width: 100%;
-  padding: 18px;
-  border: none;
-  border-radius: 18px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
-  margin-top: 10px;
 }
 
-.primary-btn {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-  color: white;
-  box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+/* Scanline effect */
+.holo-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0, 240, 255, 0.1) 50%, transparent 60%);
+  background-size: 100% 300%;
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
 }
 
-.primary-btn:active {
-  transform: scale(0.96);
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+@keyframes scanline {
+  0% {
+    background-position: 0% 0%;
+  }
+
+  100% {
+    background-position: 0% 100%;
+  }
 }
 
-.secondary-btn {
-  background: rgba(255, 255, 255, 0.8);
-  color: #4b5563;
-  border: 1px solid rgba(209, 213, 219, 0.5);
+.holo-card h1 {
+  font-size: 1.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin: 0 0 10px;
+  color: #fff;
+  text-shadow: 0 0 10px var(--holo-blue);
 }
 
-.glass-btn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  background: #9ca3af;
-  transform: none;
-  box-shadow: none;
-}
-
-/* Utility */
-.status-badge {
-  padding: 8px 16px;
-  border-radius: 50px;
-  font-weight: 600;
+.holo-card p {
+  color: rgba(255, 255, 255, 0.7);
   font-size: 0.9rem;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  margin-bottom: 30px;
 }
 
-.status-badge.success {
-  background: rgba(16, 185, 129, 0.1);
-  color: #059669;
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-.footer-link {
-  margin-top: 30px;
-  font-size: 0.9rem;
-  color: #9ca3af;
+/* Input Fields */
+input.holo-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--holo-blue);
+  border-radius: 8px;
+  padding: 16px;
+  color: var(--holo-blue);
+  font-size: 1.5rem;
   text-align: center;
+  font-family: monospace;
+  letter-spacing: 0.2em;
+  outline: none;
+  box-shadow: 0 0 10px rgba(0, 240, 255, 0.1);
+  transition: all 0.3s;
+}
+
+input.holo-input:focus {
+  box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+  background: rgba(0, 240, 255, 0.05);
+}
+
+input.holo-input::placeholder {
+  color: rgba(0, 240, 255, 0.3);
+}
+
+/* Buttons */
+.holo-btn {
+  width: 100%;
+  margin-top: 30px;
+  background: var(--holo-blue);
+  color: #000;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 18px;
+  border: none;
+  border-radius: 4px;
+  /* Sharp edges for sci-fi look */
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: all 0.2s;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
+}
+
+.holo-btn:disabled {
+  background: #333;
+  color: #666;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.holo-btn:active {
+  transform: scale(0.98);
+  background: #fff;
+  box-shadow: 0 0 30px rgba(0, 240, 255, 0.8);
+}
+
+/* Success State */
+.success-message {
+  border: 1px solid var(--holo-green, #0f0);
+  background: rgba(0, 255, 0, 0.05);
+  color: #0f0;
+  padding: 20px;
+  border-radius: 8px;
+  text-shadow: 0 0 5px #0f0;
+  font-weight: bold;
+  letter-spacing: 0.05em;
 }
 
 .footer-link a {
-  color: #6b7280;
-  text-decoration: underline;
-  text-decoration-color: rgba(107, 114, 128, 0.3);
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
 }

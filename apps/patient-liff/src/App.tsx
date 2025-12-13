@@ -77,9 +77,16 @@ function App() {
     return (
       <div className="app-container" style={{ alignItems: 'center' }}>
         <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          style={{ width: 40, height: 40, border: '4px solid rgba(255,255,255,0.3)', borderTopColor: '#3b82f6', borderRadius: '50%' }}
+          animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+          transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+          style={{
+            width: 50, height: 50,
+            border: '2px solid transparent',
+            borderTopColor: '#00f0ff',
+            borderRightColor: '#ff003c',
+            borderRadius: '50%',
+            boxShadow: '0 0 20px rgba(0, 240, 255, 0.5)'
+          }}
         />
       </div>
     );
@@ -88,11 +95,11 @@ function App() {
   if (error) {
     return (
       <div className="app-container">
-        <motion.div className="glass-card" variants={containerVariants} initial="hidden" animate="visible">
-          <h3 style={{ color: '#ef4444' }}>エラーが発生しました</h3>
+        <motion.div className="holo-card" variants={containerVariants} initial="hidden" animate="visible">
+          <h3 style={{ color: '#ff003c', textShadow: '0 0 10px red' }}>SYSTEM ERROR</h3>
           <p>{error}</p>
-          <div style={{ marginTop: 20, fontSize: '0.8rem', opacity: 0.7 }}>
-            環境: {liff.isInClient() ? 'LINE In-App' : 'External Browser'}
+          <div style={{ marginTop: 20, fontSize: '0.8rem', opacity: 0.7, fontFamily: 'monospace' }}>
+            ENV: {liff.isInClient() ? 'LINE_INTERNAL' : 'EXTERNAL_BROWSER'}
           </div>
         </motion.div>
       </div>
@@ -100,8 +107,7 @@ function App() {
   }
 
   if (!user && !loading) {
-    /* Usually initLiff redirects, but if we are here, something missed. */
-    return <div className="app-container"><p>Redirecting to Login...</p></div>;
+    return <div className="app-container"><p>REDIRECTING...</p></div>;
   }
 
   return (
@@ -110,73 +116,81 @@ function App() {
         {!patient ? (
           <motion.div
             key="register"
-            className="glass-card"
+            className="holo-card"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
             exit="exit"
           >
-            <h1>Welcome</h1>
-            <p>診察券番号を入力して<br />連携を開始してください</p>
+            <div style={{ marginBottom: 20 }}>
+              <div style={{ fontSize: '3rem', filter: 'drop-shadow(0 0 10px #00f0ff)' }}>🪪</div>
+            </div>
+            <h1>Identity Link</h1>
+            <p>ACCESS CODE REQUIRED</p>
 
-            <div style={{ width: '100%', margin: '20px 0' }}>
+            <div style={{ width: '100%', margin: '30px 0' }}>
               <input
-                className="modern-input"
+                className="holo-input"
                 type="text"
                 pattern="\d*"
                 inputMode="numeric"
                 value={inputPatientId}
                 onChange={(e) => setInputPatientId(e.target.value)}
-                placeholder="12345"
+                placeholder="00000"
               />
             </div>
 
             <motion.button
-              className="glass-btn primary-btn"
+              className="holo-btn"
               onClick={handleLink}
               disabled={registering || !inputPatientId}
               whileTap={{ scale: 0.95 }}
+              whileHover={{ scale: 1.02 }}
             >
-              {registering ? '登録中...' : '連携する'}
+              {registering ? 'PROCESSING...' : 'INITIALIZE LINK'}
             </motion.button>
           </motion.div>
         ) : (
           <motion.div
             key="dashboard"
-            className="glass-card"
+            className="holo-card"
             variants={containerVariants}
             initial="hidden"
             animate="visible"
           >
-            <div style={{ marginBottom: 10 }}>
-              <div style={{ fontSize: '3rem' }}>🏥</div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 15, marginBottom: 20 }}>
+              <div style={{ width: 10, height: 10, background: '#00f0ff', borderRadius: '50%', boxShadow: '0 0 10px #00f0ff' }}></div>
+              <div style={{ fontFamily: 'monospace', color: '#00f0ff', letterSpacing: '0.2em' }}>CONNECTED</div>
             </div>
-            <h2>{patient.name} 様</h2>
-            <p>こんにちは。本日はどのようなご用件でしょうか？</p>
+
+            <h2 style={{ fontSize: '2rem', margin: '0 0 10px', color: 'white' }}>{patient.name}</h2>
+            <p style={{ fontFamily: 'monospace', letterSpacing: '0.1em' }}>ID: {patient.patientId}</p>
 
             {checkedIn ? (
               <motion.div
                 initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="status-badge success"
-                style={{ marginTop: 20, padding: '15px 30px', fontSize: '1.2rem' }}
+                className="success-message"
+                style={{ marginTop: 30 }}
               >
-                ✅ 受付完了
+                ✔ ENTRY AUTHORIZED
               </motion.div>
             ) : (
               <motion.button
-                className="glass-btn primary-btn"
+                className="holo-btn"
                 onClick={handleCheckIn}
                 disabled={checkingIn}
                 whileTap={{ scale: 0.95 }}
-                style={{ marginTop: 30, fontSize: '1.3rem', padding: '24px' }}
+                style={{ marginTop: 40 }}
               >
-                {checkingIn ? '処理中...' : '受付する'}
+                {checkingIn ? 'verifying...' : 'CHECK-IN NOW'}
               </motion.button>
             )}
 
             {checkedIn && (
-              <p style={{ marginTop: 20, fontSize: '0.9rem' }}>待合室でお待ちください。<br />順番が近づいたらお呼びします。</p>
+              <p style={{ marginTop: 20, fontSize: '0.8rem', color: '#0f0', opacity: 0.8 }}>
+                Please wait in the staging area.
+              </p>
             )}
           </motion.div>
         )}
@@ -188,7 +202,7 @@ function App() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1 }}
       >
-        <a href="/public-status" target="_blank">現在の混雑状況を確認する</a>
+        <a href="/public-status" target="_blank">[ VIEW LIVE MONITOR ]</a>
       </motion.div>
     </div>
   );
