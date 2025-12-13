@@ -296,7 +296,7 @@ function App() {
                 whileTap={{ scale: 0.95 }}
                 style={{ marginTop: 40 }}
               >
-                {checkingIn ? '処理中...' : <>受付する <span style={{ fontSize: '1rem', opacity: 0.8, marginLeft: 5 }}>(CHECK-IN)</span></>}
+                {checkingIn ? '処理中...' : '受付する'}
               </motion.button>
             )}
 

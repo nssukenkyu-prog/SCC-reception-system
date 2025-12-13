@@ -71,14 +71,16 @@ body {
 .nit-logo {
   color: #003399;
   font-family: 'Meiryo', 'Hiragino Kaku Gothic ProN', sans-serif;
-  /* Requested Meiryo */
-  font-weight: bold;
+  font-weight: 900;
+  /* Extra bold */
   font-style: italic;
-  font-size: clamp(1.5rem, 5vw, 3rem);
+  font-size: clamp(1.8rem, 6vw, 3.5rem);
   /* Responsive sizing */
   letter-spacing: 0.05em;
   text-transform: uppercase;
   line-height: 1;
+  text-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+  /* Fake bold boost if needed */
 }
 
 /* .black-bar removed in favor of border-bottom on header */
@@ -96,51 +98,59 @@ body {
   position: relative;
   display: flex;
   flex-direction: column;
+  /* Changed layout to remove mystery gap */
   justify-content: center;
+  align-items: flex-start;
 }
 
 /* Watermark/Texture for card body could go here */
 
 .card-label {
+  /* Moved from absolute to relative to be part of flow if desired, 
+     but user liked the structure, just hated the gap. 
+     The gap was likely 'margin-top: auto' on patient-info or space-between.
+     Let's keep absolute for top-left 'E-Ticket' but ensure 'patient-info' is centered vertically 
+     without being pushed too far down. */
   position: absolute;
-  top: 5%;
-  left: 5%;
-  font-size: clamp(1rem, 3vw, 1.5rem);
+  top: 6%;
+  left: 6%;
+  font-size: clamp(1.2rem, 3.5vw, 1.8rem);
   /* Enlarged */
-  opacity: 0.8;
+  opacity: 0.9;
   letter-spacing: 0.1em;
   font-weight: bold;
 }
 
 .card-title {
-  font-size: 1.2rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  opacity: 0.9;
+  display: none;
+  /* Unused */
 }
 
 .patient-info {
   margin-top: auto;
   margin-bottom: 2%;
+  margin: auto 0;
+  width: 100%;
 }
 
 .patient-number {
   font-family: 'OCR A Std', 'Monaco', monospace;
-  font-size: clamp(1.5rem, 4vw, 2.5rem);
-  /* Clearer */
+  font-size: clamp(2.0rem, 6vw, 3.5rem);
+  /* Much Larger */
   margin-bottom: 2%;
   /* More space between No and Name */
-  opacity: 0.9;
+  opacity: 0.95;
   font-weight: bold;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.15em;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .patient-name {
-  font-size: clamp(2rem, 7vw, 4rem);
-  /* Huge name */
+  font-size: clamp(3rem, 10vw, 6rem);
+  /* MASSIVE */
   font-weight: 900;
-  letter-spacing: 0.05em;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.02em;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.6);
   /* Stronger shadow for clarity */
   line-height: 1.1;
   word-break: keep-all;
@@ -152,7 +162,8 @@ body {
       #003399 10px,
       #0044aa 10px,
       #0044aa 20px);
-  padding: 16px;
+  padding: 10px 4px;
+  /* Reduced vertical padding, minimal horizontal */
   text-align: center;
   border-top: 2px solid white;
   display: flex;
@@ -162,16 +173,18 @@ body {
 
 .footer-text {
   color: white;
-  font-weight: bold;
-  font-size: clamp(0.6rem, 2.5vw, 1.2rem);
-  /* Auto-scale text */
+  font-weight: 900;
+  /* Maximize size to Fill Card Width */
+  font-size: clamp(0.7rem, 2.9vw, 1.4rem);
   /* Using clamp or viewport units might be safer but 0.6rem is usually safe for this length */
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
-  white-space: normal;
+  white-space: nowrap;
   /* Allow wrap if absolutely needed, but size should prevent it */
   overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.2;
+  text-overflow: clip;
+  /* Ensure no ellipsis if we want it jam packed */
+  line-height: 1;
+  width: 100%;
 }
 
 /* Prominent Check-in Button */
