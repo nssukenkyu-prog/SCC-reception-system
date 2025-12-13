@@ -8,23 +8,21 @@ interface VisitRowProps {
     onEdit: (id: string, name: string) => void;
     onComplete: (id: string) => void;
     onCancel: (id: string) => void;
+    onToggleReceipt: (id: string, status: boolean) => void;
 }
 
-export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel }: VisitRowProps) => {
+export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleReceipt }: VisitRowProps) => {
     const x = useMotionValue(0);
 
     // Indicators
     const checkOpacity = useTransform(x, [50, 100], [0, 1]);
     const trashOpacity = useTransform(x, [-50, -100], [0, 1]);
 
-    // Dynamic Background on drag
-    // Neutral: Dark Glass
-    // Right (Done): Greenish tint
-    // Left (Cancel): Reddish tint
+    // Dynamic Background
     const bg = useTransform(x, [-100, 0, 100], [
-        'rgba(244, 114, 182, 0.2)', // Cancel trigger
-        'rgba(30, 41, 59, 0.6)',    // Neutral (Dark Glass)
-        'rgba(74, 222, 128, 0.2)'   // Done trigger
+        'rgba(244, 114, 182, 0.2)', // Cancel
+        'rgba(30, 41, 59, 0.6)',    // Neutral
+        'rgba(74, 222, 128, 0.2)'   // Done
     ]);
 
     const borderColor = useTransform(x, [-100, 0, 100], [
@@ -75,7 +73,7 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel }: VisitRo
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100, transition: { duration: 0.2 } }}
             >
-                <div style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px auto', alignItems: 'center', padding: '24px 30px', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px 80px auto', alignItems: 'center', padding: '24px 30px', gap: '20px' }}>
 
                     {/* 1. Number */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -106,8 +104,31 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel }: VisitRo
                         </div>
                     </div>
 
-                    {/* 5. Edit */}
+                    {/* 5. Receipt Status (New) */}
+                    <div style={{ display: 'flex', justifyContent: 'center' }} onPointerDown={(e) => e.stopPropagation()}>
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation(); // Prevent drag/list click
+                                if (visit.id) onToggleReceipt(visit.id, visit.receiptStatus || false);
+                            }}
+                            style={{
+                                width: 40, height: 40,
+                                borderRadius: '8px',
+                                border: visit.receiptStatus ? '2px solid #4ade80' : '2px solid rgba(255,255,255,0.2)',
+                                background: visit.receiptStatus ? 'rgba(74, 222, 128, 0.2)' : 'transparent',
+                                color: visit.receiptStatus ? '#4ade80' : 'transparent',
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                cursor: 'pointer',
+                                transition: 'all 0.2s'
+                            }}
+                        >
+                            <CheckCircle size={24} />
+                        </button>
+                    </div>
+
+                    {/* 6. Edit */}
                     <button
+                        onPointerDown={(e) => e.stopPropagation()}
                         onClick={(e) => { e.stopPropagation(); visit.patientId && onEdit(visit.patientId, visit.name); }}
                         style={{
                             width: 44, height: 44,

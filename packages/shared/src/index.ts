@@ -21,6 +21,7 @@ export interface Visit {
     completedAt?: any; // Timestamp
     createdBy: 'patient' | 'staff';
     closedBy?: 'staff' | 'system';
+    receiptStatus?: boolean; // true = registered in receipt computer
 }
 
 export interface PublicStatus {

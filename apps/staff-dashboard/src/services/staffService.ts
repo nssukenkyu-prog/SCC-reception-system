@@ -33,6 +33,11 @@ export const updateVisitStatus = async (visitId: string, status: 'paid' | 'cance
     await updateDoc(ref, updates);
 };
 
+export const toggleReceiptStatus = async (visitId: string, currentStatus: boolean) => {
+    const ref = doc(db, 'visits', visitId);
+    await updateDoc(ref, { receiptStatus: !currentStatus });
+};
+
 export const createProxyVisit = async (name: string, patientId: string) => {
     const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
     await addDoc(collection(db, 'visits'), {

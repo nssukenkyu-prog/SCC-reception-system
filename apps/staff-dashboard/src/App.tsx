@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
-import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveVisits, updatePatientName, importPatients, getPatientById } from './services/staffService';
+import { subscribeToVisits, updateVisitStatus, createProxyVisit, closeAllActiveVisits, updatePatientName, importPatients, getPatientById, toggleReceiptStatus } from './services/staffService';
 import type { Visit } from '@reception/shared';
 import { VisitRow } from './components/VisitRow';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -286,12 +286,13 @@ function App() {
       </div>
 
       <div className="visit-list-container">
-        <h2>受付中 (Active Patients)</h2>
-        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px auto', gap: '20px', paddingBottom: 10 }}>
+        <h2>案内待ち・施術中 (Waiting/Treatment)</h2>
+        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px 80px auto', gap: '20px', paddingBottom: 10 }}>
           <div style={{ textAlign: 'center' }}>No.</div>
           <div style={{ textAlign: 'center' }}>診察券</div>
           <div>氏名</div>
           <div style={{ textAlign: 'right' }}>受付時間</div>
+          <div style={{ textAlign: 'center' }}>レセコン</div>
           <div></div>
         </div>
 
@@ -305,6 +306,7 @@ function App() {
                 onEdit={openEditModal}
                 onComplete={(id) => updateVisitStatus(id, 'paid')}
                 onCancel={(id) => updateVisitStatus(id, 'cancelled')}
+                onToggleReceipt={(id, status) => toggleReceiptStatus(id, status)}
               />
             ))}
           </AnimatePresence>

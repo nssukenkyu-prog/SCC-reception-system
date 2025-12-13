@@ -21,12 +21,22 @@ service cloud.firestore {
       // Patient can create their own record or read it
       // Since we don't always know patientId == auth.uid (we map them), 
       // we allow create if auth is strict, but let's allow any auth for now as long as they authenticate
+      // Allow create by authenticated users
       allow create: if request.auth != null;
       
-      // Allow read/update if:
-      // 1. The patient doc has the user's firebaseUid (Owner)
-      // 2. The patient doc has NO firebaseUid (Unclaimed/Imported) - allows linking
-      allow read, update: if request.auth != null && (
+      // Allow read if:
+      // 1. Doc doesn't exist (resource == null) - needed for existence check
+      // 2. User owns the doc (firebaseUid match)
+      // 3. Doc is unclaimed (firebaseUid missing or null)
+      allow read: if request.auth != null && (
+        resource == null ||
+        resource.data.firebaseUid == request.auth.uid || 
+        !('firebaseUid' in resource.data) ||
+        resource.data.firebaseUid == null
+      );
+
+      // Allow update only if user owns it or it's unclaimed
+      allow update: if request.auth != null && (
         resource.data.firebaseUid == request.auth.uid || 
         !('firebaseUid' in resource.data) ||
         resource.data.firebaseUid == null

@@ -19,6 +19,7 @@ export interface Visit {
     completedAt?: any;
     createdBy: 'patient' | 'staff';
     closedBy?: 'staff' | 'system';
+    receiptStatus?: boolean;
 }
 export interface PublicStatus {
     activeCount: number;
