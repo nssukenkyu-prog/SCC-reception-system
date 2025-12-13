@@ -2052,3 +2052,34 @@
 2025-12-13T09:28:56.928102Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
 2025-12-13T09:28:59.028118Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
 2025-12-13T09:28:59.028140Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T09:38:32.947125Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/src/App.css")}
+2025-12-13T09:38:32.948889Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-13T09:38:36.535312Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/cookies/87.cookie")}
+2025-12-13T09:38:36.535327Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T09:38:36.634968Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/cookies/89.cookie"), AnchoredSystemPathBuf("apps/patient-liff/.turbo/turbo-build.log"), AnchoredSystemPathBuf(".turbo/cookies/88.cookie")}
+2025-12-13T09:38:36.634982Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T09:38:36.646489Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:38.534303Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/node_modules/.tmp/tsconfig.app.tsbuildinfo")}
+2025-12-13T09:38:38.534343Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-13T09:38:38.618019Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:39.234370Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/node_modules/.tmp/tsconfig.node.tsbuildinfo")}
+2025-12-13T09:38:39.234385Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-13T09:38:39.308709Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:39.934702Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/node_modules/.vite-temp/vite.config.ts.timestamp-1765618719828-776317b44e3c6.mjs")}
+2025-12-13T09:38:39.934718Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-13T09:38:39.934746Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:43.037800Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/dist/assets/index-CMMz5rJb.css"), AnchoredSystemPathBuf("apps/patient-liff/dist/index.html"), AnchoredSystemPathBuf("apps/patient-liff/dist/_redirects"), AnchoredSystemPathBuf("apps/patient-liff/dist/assets"), AnchoredSystemPathBuf("apps/patient-liff/dist/assets/index-DFfI287W.js"), AnchoredSystemPathBuf("apps/patient-liff/dist/vite.svg")}
+2025-12-13T09:38:43.037986Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-13T09:38:43.049738Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:43.735774Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/patient-liff/dist/assets/index-dWYBCCi1.css"), AnchoredSystemPathBuf("apps/patient-liff/dist/assets"), AnchoredSystemPathBuf("apps/patient-liff/dist/assets/index-H6vhdEqV.js"), AnchoredSystemPathBuf("apps/patient-liff/dist/index.html")}
+2025-12-13T09:38:43.735793Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }}))
+2025-12-13T09:38:43.786731Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:43.834886Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("node_modules/.cache/turbo/26d500ae904742ae-meta.json"), AnchoredSystemPathBuf("apps/patient-liff/.turbo/turbo-build.log"), AnchoredSystemPathBuf("node_modules/.cache/turbo/26d500ae904742ae.tar.zst"), AnchoredSystemPathBuf(".turbo/cookies/90.cookie")}
+2025-12-13T09:38:43.834902Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("patient-liff"), path: AnchoredSystemPathBuf("apps/patient-liff") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T09:38:43.887496Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T09:38:48.435373Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
+2025-12-13T09:38:48.435462Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T09:38:50.635150Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".firebase/hosting.YXBwcy9wYXRpZW50LWxpZmYvZGlzdA.cache")}
+2025-12-13T09:38:50.635180Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T09:38:52.434500Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
+2025-12-13T09:38:52.434509Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
