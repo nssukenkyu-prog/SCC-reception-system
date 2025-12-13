@@ -79,7 +79,7 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -100, transition: { duration: 0.2 } }}
             >
-                <div style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px 80px auto', alignItems: 'center', padding: '24px 30px', gap: '20px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '50px 130px 1fr 110px 100px 60px', alignItems: 'center', padding: '24px 30px', gap: '15px' }}>
 
                     {/* 1. Number */}
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -110,23 +110,23 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                         </div>
                     </div>
 
-                    {/* 5. Receipt Status (New) */}
+                    {/* 5. Receipt Status (Checkbox) */}
                     <div style={{ display: 'flex', justifyContent: 'center' }}>
-                        <button
+                        <div
                             style={{
-                                width: 40, height: 40,
-                                borderRadius: '8px',
-                                border: visit.receiptStatus ? '2px solid #4ade80' : '2px solid rgba(255,255,255,0.2)',
-                                background: visit.receiptStatus ? 'rgba(74, 222, 128, 0.2)' : 'transparent',
-                                color: visit.receiptStatus ? '#4ade80' : 'transparent',
+                                width: 32, height: 32,
+                                borderRadius: '6px',
+                                border: visit.receiptStatus ? '2px solid #4ade80' : '2px solid rgba(255,255,255,0.3)',
+                                background: visit.receiptStatus ? '#4ade80' : 'rgba(0,0,0,0.2)',
+                                color: visit.receiptStatus ? '#0f172a' : 'transparent',
                                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                                cursor: 'pointer',
                                 transition: 'all 0.2s',
-                                pointerEvents: 'none' // Let parent handle click
+                                boxShadow: visit.receiptStatus ? '0 0 10px rgba(74, 222, 128, 0.4)' : 'none'
                             }}
                         >
-                            <CheckCircle size={24} />
-                        </button>
+                            {/* Using Check from lucide-react, imported as CheckCircle previously? Need Check */}
+                            <CheckCircle size={20} />
+                        </div>
                     </div>
 
                     {/* 6. Edit */}
