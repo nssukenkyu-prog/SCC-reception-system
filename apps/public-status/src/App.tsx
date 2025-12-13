@@ -63,45 +63,21 @@ function App() {
         </div>
       </header>
 
-      <div className="monitor-main">
-        {/* Left: Stats */}
-        <div className="stats-panel">
-          <div className="stat-box">
-            <div className="stat-label">現在の待ち人数</div>
-            <div className="stat-value">
-              {activeCount}<span className="stat-unit">人</span>
+      <div className="monitor-main" style={{ justifyContent: 'center' }}>
+        {/* Stats Only - Centered and Big */}
+        <div className="stats-panel" style={{ width: '100%', maxWidth: '1200px', flexDirection: 'row', gap: 60, justifyContent: 'center' }}>
+          <div className="stat-box" style={{ flex: 1, height: '400px' }}>
+            <div className="stat-label">キュアセンター内の人数</div>
+            <div className="stat-value" style={{ fontSize: '10rem' }}>
+              {activeCount}<span className="stat-unit" style={{ fontSize: '3rem' }}>人</span>
             </div>
           </div>
 
-          <div className="stat-box wait-time">
+          <div className="stat-box wait-time" style={{ flex: 1, height: '400px' }}>
             <div className="stat-label">推定待ち時間</div>
-            <div className="stat-value" style={{ fontSize: '5rem' }}>
+            <div className="stat-value" style={{ fontSize: '8rem' }}>
               {waitDisplay}
             </div>
-          </div>
-        </div>
-
-        {/* Right: Queue Visual */}
-        <div className="list-panel">
-          <div style={{ flex: 1, overflow: 'hidden' }}>
-            {activeVisits.slice(0, 5).map((v, i) => (
-              <div key={i} className="status-row active">
-                <span style={{ fontWeight: 'bold' }}>NO. {i + 1}</span>
-                <span>...{v.patientId?.slice(-4) ?? '****'}</span>
-                <span style={{ fontSize: '1rem', color: '#94a3b8' }}>
-                  {v.arrivedAt?.toDate ? v.arrivedAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
-                </span>
-              </div>
-            ))}
-            {activeVisits.length > 5 && (
-              <div style={{ textAlign: 'center', color: '#94a3b8', marginTop: 20 }}>
-                + 他 {activeVisits.length - 5} 人
-              </div>
-            )}
-            {activeVisits.length === 0 && (
-              <div style={{ textAlign: 'center', color: '#64748b', marginTop: 40, fontSize: '1.5rem' }}>
-              </div>
-            )}
           </div>
         </div>
       </div>

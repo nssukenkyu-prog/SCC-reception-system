@@ -43,7 +43,7 @@ body {
 .dashboard {
   width: 100%;
   /* Ensure it takes full width up to max */
-  max-width: 1200px;
+  max-width: none;
   /* Slightly reduce for better readability on standard laptops */
   margin: 0 auto;
   /* Center horizontally */
