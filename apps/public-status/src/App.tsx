@@ -43,14 +43,18 @@ function App() {
 
   // Calc Logic
   const activeCount = activeVisits.length;
-  // Simple logic: 15 mins per person roughly
-  const estimatedWaitRaw = activeCount * 15;
-  let waitDisplay = '0分';
-  if (estimatedWaitRaw > 60) waitDisplay = '60分以上';
-  else if (estimatedWaitRaw > 30) waitDisplay = '30〜60分';
-  else if (estimatedWaitRaw > 10) waitDisplay = '10〜30分';
-  else if (estimatedWaitRaw > 0) waitDisplay = '10分未満';
-  else waitDisplay = '--';
+
+  let waitDisplay = '';
+  // New Logic per user request
+  if (activeCount <= 3) {
+    waitDisplay = 'すぐご案内可能です';
+  } else if (activeCount <= 8) {
+    waitDisplay = '5〜10分以内にご案内可能';
+  } else if (activeCount <= 12) {
+    waitDisplay = '10〜15分以内にご案内可能';
+  } else {
+    waitDisplay = '15分以上';
+  }
 
   if (loading) return <div style={{ color: 'white', padding: 50 }}>Connecting to Live System...</div>;
 
@@ -75,7 +79,7 @@ function App() {
 
           <div className="stat-box wait-time" style={{ flex: 1, height: '400px' }}>
             <div className="stat-label">推定待ち時間</div>
-            <div className="stat-value" style={{ fontSize: '8rem' }}>
+            <div className="stat-value" style={{ fontSize: '4rem', lineHeight: '1.2' }}>
               {waitDisplay}
             </div>
           </div>
