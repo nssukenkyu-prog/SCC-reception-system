@@ -251,7 +251,7 @@ function App() {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            style={{ width: '100%', maxWidth: 400 }}
+            style={{ width: '100%' }}
           >
             {/* Digital Card Replica */}
             <div className="digital-card">
