@@ -206,12 +206,15 @@ function App() {
       >
         <div className="proxy-label">
           <UserPlus size={20} color="#00f0ff" />
-          <span>QUICK CHECK-IN</span>
+          <span>手動登録</span>
         </div>
         <form onSubmit={handleProxySubmit} className="proxy-inputs">
           <div className="input-group">
             <span className="input-prefix">ID</span>
             <input
+              type="tel"
+              inputMode="numeric"
+              pattern="[0-9]*"
               placeholder="診察券番号"
               value={proxyId}
               onChange={e => {

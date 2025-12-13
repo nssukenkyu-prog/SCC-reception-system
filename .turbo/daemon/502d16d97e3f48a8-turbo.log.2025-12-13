@@ -1847,3 +1847,36 @@
 2025-12-13T08:48:58.383078Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
 2025-12-13T08:48:58.482424Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
 2025-12-13T08:48:58.482439Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T08:51:57.886099Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/src/App.tsx")}
+2025-12-13T08:51:57.886769Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:09.782878Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/cookies/64.cookie")}
+2025-12-13T08:52:09.782899Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T08:52:10.082973Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".turbo/cookies/66.cookie"), AnchoredSystemPathBuf(".turbo/cookies/65.cookie"), AnchoredSystemPathBuf("apps/staff-dashboard/.turbo/turbo-build.log")}
+2025-12-13T08:52:10.082989Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }, WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T08:52:10.157923Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:13.182782Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/node_modules/.tmp/tsconfig.app.tsbuildinfo")}
+2025-12-13T08:52:13.182817Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:13.265764Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:13.987015Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/node_modules/.tmp/tsconfig.node.tsbuildinfo")}
+2025-12-13T08:52:13.987032Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:14.012748Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:14.583329Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/node_modules/.vite-temp/vite.config.ts.timestamp-1765615934521-0899f05f186de.mjs")}
+2025-12-13T08:52:14.583567Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:14.629236Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:21.989469Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/dist/assets"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/assets/index-NZ9cx6Hg.css"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/vite.svg"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/_redirects"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/assets/index-6oEUWy3u.js"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/index.html")}
+2025-12-13T08:52:21.989508Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:22.223633Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:23.186209Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("apps/staff-dashboard/dist/assets/index-BoCAuUKt.js"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/assets/index-NZ9cx6Hg.css"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/assets"), AnchoredSystemPathBuf("apps/staff-dashboard/dist/index.html")}
+2025-12-13T08:52:23.186226Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:23.356507Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:23.487507Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("node_modules/.cache/turbo/c5e2ff1a3be31dbc.tar.zst"), AnchoredSystemPathBuf("apps/staff-dashboard/.turbo/turbo-build.log"), AnchoredSystemPathBuf("node_modules/.cache/turbo/c5e2ff1a3be31dbc-meta.json"), AnchoredSystemPathBuf(".turbo/cookies/67.cookie")}
+2025-12-13T08:52:23.487537Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }, WorkspacePackage { name: Other("staff-dashboard"), path: AnchoredSystemPathBuf("apps/staff-dashboard") }}))
+2025-12-13T08:52:23.618906Z  WARN turborepo_lib::package_changes_watcher: hashes are the same, no need to rerun
+2025-12-13T08:52:25.538006Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
+2025-12-13T08:52:25.538058Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T08:52:28.182796Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf(".firebase/hosting.YXBwcy9zdGFmZi1kYXNoYm9hcmQvZGlzdA.cache")}
+2025-12-13T08:52:28.182820Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T08:52:30.783194Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
+2025-12-13T08:52:30.783208Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
+2025-12-13T08:52:30.886949Z  WARN turborepo_lib::package_changes_watcher: changed_files: {AnchoredSystemPathBuf("firebase-debug.log")}
+2025-12-13T08:52:30.886975Z  WARN turborepo_lib::package_changes_watcher: changed_packages: Ok(Some({WorkspacePackage { name: Root, path: AnchoredSystemPathBuf("") }}))
