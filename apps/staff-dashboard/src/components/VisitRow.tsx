@@ -88,7 +88,7 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                     </div>
 
                     {/* 2. Patient ID */}
-                    <div style={{ background: 'rgba(0,0,0,0.3)', padding: '8px 12px', borderRadius: '10px', textAlign: 'center', fontSize: '1.1rem', fontFamily: 'monospace', fontWeight: '600', color: '#94a3b8', letterSpacing: '0.05em' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.1)', padding: '8px 12px', borderRadius: '10px', textAlign: 'center', fontSize: '1.5rem', fontFamily: 'monospace', fontWeight: '800', color: '#fff', letterSpacing: '0.05em', border: '1px solid rgba(255,255,255,0.2)' }}>
                         {visit.patientId}
                     </div>
 
@@ -106,7 +106,7 @@ export const VisitRow = ({ visit, index, onEdit, onComplete, onCancel, onToggleR
                             <Clock size={14} /> ARRIVED
                         </div>
                         <div style={{ fontSize: '1.2rem', fontWeight: '600', color: '#e2e8f0' }}>
-                            {visit.arrivedAt?.toDate ? visit.arrivedAt.toDate().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : '--:--'}
+                            {visit.arrivedAt?.toDate ? visit.arrivedAt.toDate().toLocaleTimeString('ja-JP', { hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Tokyo' }) : '--:--'}
                         </div>
                     </div>
 

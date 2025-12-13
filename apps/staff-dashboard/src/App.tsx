@@ -301,7 +301,7 @@ function App() {
 
       <div className="visit-list-container">
         <h2>案内待ち・施術中 (Waiting/Treatment)</h2>
-        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px 80px auto', gap: '20px', padding: '0 30px 10px 30px' }}>
+        <div className="visit-list-header" style={{ display: 'grid', gridTemplateColumns: '60px 140px 1fr 100px 80px auto', gap: '20px', padding: '0 30px 10px 30px', border: '1px solid transparent' }}>
           <div style={{ textAlign: 'center' }}>No.</div>
           <div style={{ textAlign: 'center' }}>診察券</div>
           <div>氏名</div>
