@@ -257,7 +257,10 @@ function App() {
             <div className="digital-card">
               {/* Top White Bar */}
               <div className="nit-header">
-                <div className="nit-logo">NITTAIDAI</div>
+                <div className="header-row">
+                  <span className="sc-logo">Sport Cure Center</span>
+                  <span className="digital-label">デジタル診察券</span>
+                </div>
               </div>
 
               {/* Black Separator */}
@@ -265,7 +268,7 @@ function App() {
 
               {/* Main Blue Body */}
               <div className="card-body">
-                <div className="card-label">E-診察券</div>
+                {/* E-Ticket Label Removed */}
 
                 <div className="patient-info">
                   <div className="patient-number">No. {patient.patientId}</div>
