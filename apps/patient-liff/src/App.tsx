@@ -15,6 +15,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [inputPatientId, setInputPatientId] = useState('');
   const [inputName, setInputName] = useState('');
+  const [foundName, setFoundName] = useState('');
+  const [step, setStep] = useState<'input_id' | 'confirm_existing' | 'input_new'>('input_id');
   const [registering, setRegistering] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
@@ -24,7 +26,7 @@ function App() {
       try {
         await signInAnonymously(auth);
         const profile = await initLiff();
-        setUser(profile); // Might be null via redirect, that's fine
+        setUser(profile);
         if (profile?.userId) {
           const p = await getPatientByLineId(profile.userId);
           setPatient(p);
@@ -39,12 +41,35 @@ function App() {
     init();
   }, []);
 
+  const handleCheckId = async () => {
+    if (!inputPatientId) return;
+    setRegistering(true);
+    try {
+      const { getPatientById } = await import('./services/patientService');
+      const existing = await getPatientById(inputPatientId);
+      if (existing) {
+        setFoundName(existing.name);
+        setStep('confirm_existing');
+      } else {
+        setStep('input_new');
+      }
+    } catch (e) {
+      console.error(e);
+      setStep('input_new');
+    } finally {
+      setRegistering(false);
+    }
+  };
+
   const handleLink = async () => {
-    if (!user?.userId || !inputPatientId || !inputName) return;
+    if (!user?.userId || !inputPatientId) return;
+    const nameToUse = step === 'confirm_existing' ? foundName : inputName;
+    if (!nameToUse) return;
+
     setRegistering(true);
     setError(null);
     try {
-      const p = await linkPatient(inputPatientId, user.userId, inputName);
+      const p = await linkPatient(inputPatientId, user.userId, nameToUse);
       setPatient(p);
     } catch (e: any) {
       setError(e.message);
@@ -67,7 +92,6 @@ function App() {
     }
   };
 
-  // Animation Variants
   const containerVariants: Variants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
@@ -127,37 +151,95 @@ function App() {
               <div style={{ fontSize: '3rem', filter: 'drop-shadow(0 0 10px #00f0ff)' }}>🪪</div>
             </div>
             <h1>デジタル診察券 発行</h1>
-            <p>診察券番号と氏名を入力してください</p>
 
-            <div style={{ width: '100%', margin: '20px 0', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-              <input
-                className="holo-input"
-                type="text"
-                pattern="\d*"
-                inputMode="numeric"
-                value={inputPatientId}
-                onChange={(e) => setInputPatientId(e.target.value)}
-                placeholder="診察券番号 (例: 1234)"
-              />
-              <input
-                className="holo-input"
-                type="text"
-                value={inputName}
-                onChange={(e) => setInputName(e.target.value)}
-                placeholder="氏名 (例: 山田 太郎)"
-                style={{ textAlign: 'left' }}
-              />
-            </div>
+            {step === 'input_id' && (
+              <>
+                <p>診察券番号を入力してください</p>
+                <div style={{ width: '100%', margin: '20px 0' }}>
+                  <input
+                    className="holo-input"
+                    type="text"
+                    pattern="\d*"
+                    inputMode="numeric"
+                    value={inputPatientId}
+                    onChange={(e) => setInputPatientId(e.target.value)}
+                    placeholder="例: 1234"
+                    autoFocus
+                  />
+                </div>
+                <motion.button
+                  className="holo-btn"
+                  onClick={handleCheckId}
+                  disabled={registering || !inputPatientId}
+                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                >
+                  {registering ? '確認中...' : '次へ'}
+                </motion.button>
+              </>
+            )}
 
-            <motion.button
-              className="holo-btn"
-              onClick={handleLink}
-              disabled={registering || !inputPatientId || !inputName}
-              whileTap={{ scale: 0.95 }}
-              whileHover={{ scale: 1.02 }}
-            >
-              {registering ? '発行中...' : 'デジタル診察券を作成'}
-            </motion.button>
+            {step === 'confirm_existing' && (
+              <>
+                <p>このお名前でよろしいですか？</p>
+                <div style={{ margin: '20px 0', padding: '15px', border: '1px solid #00f0ff', borderRadius: '8px', background: 'rgba(0, 240, 255, 0.1)' }}>
+                  <h2 style={{ margin: 0, color: '#fff' }}>{foundName} <span style={{ fontSize: '0.8rem' }}>様</span></h2>
+                  <p style={{ margin: '5px 0 0', opacity: 0.7, fontSize: '0.9rem' }}>No. {inputPatientId}</p>
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={() => { setStep('input_id'); setInputPatientId(''); }}
+                    style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #666', color: '#ccc', borderRadius: '4px' }}
+                  >
+                    戻る
+                  </button>
+                  <motion.button
+                    className="holo-btn"
+                    style={{ flex: 2 }}
+                    onClick={handleLink}
+                    disabled={registering}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {registering ? '発行中...' : 'はい、連携します'}
+                  </motion.button>
+                </div>
+              </>
+            )}
+
+            {step === 'input_new' && (
+              <>
+                <p>氏名を入力してください（新規登録）</p>
+                <div style={{ width: '100%', margin: '20px 0', display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  <div style={{ opacity: 0.7, fontSize: '0.9rem' }}>診察券番号: {inputPatientId}</div>
+                  <input
+                    className="holo-input"
+                    type="text"
+                    value={inputName}
+                    onChange={(e) => setInputName(e.target.value)}
+                    placeholder="氏名 (例: 山田 太郎)"
+                    style={{ textAlign: 'left' }}
+                    autoFocus
+                  />
+                </div>
+                <div style={{ display: 'flex', gap: '10px' }}>
+                  <button
+                    onClick={() => { setStep('input_id'); }}
+                    style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #666', color: '#ccc', borderRadius: '4px' }}
+                  >
+                    戻る
+                  </button>
+                  <motion.button
+                    className="holo-btn"
+                    style={{ flex: 2 }}
+                    onClick={handleLink}
+                    disabled={registering || !inputName}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {registering ? '登録中...' : '登録して連携'}
+                  </motion.button>
+                </div>
+              </>
+            )}
           </motion.div>
         ) : (
           <motion.div
@@ -202,14 +284,12 @@ function App() {
 
             {checkedIn && (
               <p style={{ marginTop: 20, fontSize: '0.8rem', color: '#0f0', opacity: 0.8 }}>
-                待合室でお待ちください。<br />呼び出し状況は下のリンクから確認できます。
+                待合室でお待ちください。
               </p>
             )}
           </motion.div>
         )}
       </AnimatePresence>
-
-
     </div>
   );
 }

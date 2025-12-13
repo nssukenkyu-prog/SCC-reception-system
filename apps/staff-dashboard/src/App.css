@@ -41,9 +41,14 @@ body {
 
 /* Layout */
 .dashboard {
-  max-width: 1400px;
+  width: 100%;
+  /* Ensure it takes full width up to max */
+  max-width: 1200px;
+  /* Slightly reduce for better readability on standard laptops */
   margin: 0 auto;
-  padding: 20px;
+  /* Center horizontally */
+  padding: 40px;
+  /* Increase padding */
   min-height: 100vh;
   display: flex;
   flex-direction: column;

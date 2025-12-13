@@ -2,11 +2,20 @@ import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimest
 import { db, auth } from '../firebase';
 import type { Patient, Visit } from '@reception/shared';
 
+// Find patient by LINE ID (auto-login)
 export const getPatientByLineId = async (lineUserId: string): Promise<Patient | null> => {
     const q = query(collection(db, 'patients'), where('lineUserId', '==', lineUserId));
     const snapshot = await getDocs(q);
     if (snapshot.empty) return null;
     return { ...snapshot.docs[0].data(), patientId: snapshot.docs[0].id } as Patient;
+};
+
+// Check if patient exists by ID (manual input)
+export const getPatientById = async (patientId: string): Promise<Patient | null> => {
+    const patientRef = doc(db, 'patients', patientId);
+    const snapshot = await getDoc(patientRef);
+    if (!snapshot.exists()) return null;
+    return { ...snapshot.data(), patientId: snapshot.id } as Patient;
 };
 
 export const linkPatient = async (patientId: string, lineUserId: string, name: string): Promise<Patient> => {
