@@ -295,6 +295,99 @@ body {
   cursor: not-allowed;
 }
 
+/* Neo-Cyber Input Theme */
+.neo-form-container {
+  width: 90vw;
+  max-width: 400px;
+  background: rgba(20, 20, 30, 0.4);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.neo-label {
+  display: block;
+  color: #00f0ff;
+  font-size: 1rem;
+  margin-bottom: 8px;
+  font-weight: bold;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.neo-input {
+  width: 100%;
+  height: 60px;
+  /* Huge touch target */
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid rgba(0, 240, 255, 0.3);
+  border-radius: 12px;
+  color: white;
+  font-size: 1.8rem;
+  /* Large text */
+  padding: 0 20px;
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: 'OCR A Std', monospace;
+  box-sizing: border-box;
+  /* Critical for padding */
+}
+
+.neo-input:focus {
+  border-color: #00f0ff;
+  box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+  background: rgba(0, 240, 255, 0.1);
+}
+
+.neo-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 1.2rem;
+}
+
+.neo-btn {
+  width: 100%;
+  height: 64px;
+  background: linear-gradient(135deg, #00f0ff 0%, #0099ff 100%);
+  border: none;
+  border-radius: 12px;
+  color: black;
+  font-weight: 900;
+  font-size: 1.4rem;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0, 240, 255, 0.3);
+  transition: transform 0.1s, box-shadow 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 10px;
+}
+
+.neo-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 5px rgba(0, 240, 255, 0.3);
+}
+
+.neo-btn:disabled {
+  background: #333;
+  color: #666;
+  box-shadow: none;
+  cursor: not-allowed;
+}
+
+.neo-btn.secondary {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  box-shadow: none;
+}
+
 /* Success State Override */
 .success-message {
   margin-top: 30px;

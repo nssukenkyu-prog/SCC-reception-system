@@ -147,101 +147,120 @@ function App() {
             animate="visible"
             exit="exit"
           >
-            <div style={{ marginBottom: 20 }}>
-              <div style={{ fontSize: '3rem', filter: 'drop-shadow(0 0 10px #00f0ff)' }}>🪪</div>
+            <div style={{ marginBottom: 40, marginTop: 20 }}>
+              <div style={{ fontSize: '4rem', filter: 'drop-shadow(0 0 20px #00f0ff)' }}>🪪</div>
             </div>
-            <h1>デジタル診察券 発行</h1>
+
+            {/* Header Title */}
+            <h1 style={{
+              fontSize: '2rem',
+              fontWeight: 900,
+              margin: '0 0 30px',
+              background: 'linear-gradient(to right, #fff, #00f0ff)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textAlign: 'center'
+            }}>
+              DIGITAL ID
+            </h1>
 
             {step === 'input_id' && (
-              <>
-                <p>診察券番号を入力してください</p>
-                <div style={{ width: '100%', margin: '20px 0' }}>
+              <div className="neo-form-container">
+                <p style={{ textAlign: 'center', margin: 0, opacity: 0.8 }}>診察券番号を入力してください</p>
+                <div>
+                  <label className="neo-label">ID NUMBER</label>
                   <input
-                    className="holo-input"
-                    type="text"
-                    pattern="\d*"
+                    className="neo-input"
+                    type="text" // Changed from tel to text to allow custom pattern handling if needed, but tel is better for numpad. Let's stick to tel but ensure large font.
                     inputMode="numeric"
+                    pattern="[0-9]*"
                     value={inputPatientId}
                     onChange={(e) => {
                       const val = e.target.value.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
                       setInputPatientId(val);
                     }}
-                    placeholder="例: 1234"
+                    placeholder="1234"
                     autoFocus
                   />
                 </div>
                 <motion.button
-                  className="holo-btn"
+                  className="neo-btn"
                   onClick={handleCheckId}
                   disabled={registering || !inputPatientId}
                   whileTap={{ scale: 0.95 }}
-                  whileHover={{ scale: 1.02 }}
                 >
                   {registering ? '確認中...' : '次へ'}
                 </motion.button>
-              </>
+              </div>
             )}
 
             {step === 'confirm_existing' && (
-              <>
-                <p>このお名前でよろしいですか？</p>
-                <div style={{ margin: '20px 0', padding: '15px', border: '1px solid #00f0ff', borderRadius: '8px', background: 'rgba(0, 240, 255, 0.1)' }}>
-                  <h2 style={{ margin: 0, color: '#fff' }}>{foundName} <span style={{ fontSize: '0.8rem' }}>様</span></h2>
-                  <p style={{ margin: '5px 0 0', opacity: 0.7, fontSize: '0.9rem' }}>No. {inputPatientId}</p>
+              <div className="neo-form-container">
+                <p style={{ textAlign: 'center', margin: 0 }}>このお名前でよろしいですか？</p>
+                <div style={{
+                  padding: '20px',
+                  border: '2px solid #00f0ff',
+                  borderRadius: '16px',
+                  background: 'rgba(0, 240, 255, 0.1)',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '0.9rem', color: '#00f0ff', marginBottom: 5 }}>No. {inputPatientId}</div>
+                  <h2 style={{ margin: 0, color: '#fff', fontSize: '2rem' }}>{foundName} <span style={{ fontSize: '1rem' }}>様</span></h2>
                 </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
-                  <button
-                    onClick={() => { setStep('input_id'); setInputPatientId(''); }}
-                    style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #666', color: '#ccc', borderRadius: '4px' }}
-                  >
-                    戻る
-                  </button>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                   <motion.button
-                    className="holo-btn"
-                    style={{ flex: 2 }}
+                    className="neo-btn"
                     onClick={handleLink}
                     disabled={registering}
                     whileTap={{ scale: 0.95 }}
                   >
                     {registering ? '発行中...' : 'はい、連携します'}
                   </motion.button>
-                </div>
-              </>
-            )}
-
-            {step === 'input_new' && (
-              <>
-                <p>氏名を入力してください（新規登録）</p>
-                <div style={{ width: '100%', margin: '20px 0', display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  <div style={{ opacity: 0.7, fontSize: '0.9rem' }}>診察券番号: {inputPatientId}</div>
-                  <input
-                    className="holo-input"
-                    type="text"
-                    value={inputName}
-                    onChange={(e) => setInputName(e.target.value)}
-                    placeholder="氏名 (例: 山田 太郎)"
-                    style={{ textAlign: 'left' }}
-                    autoFocus
-                  />
-                </div>
-                <div style={{ display: 'flex', gap: '10px' }}>
                   <button
-                    onClick={() => { setStep('input_id'); }}
-                    style={{ flex: 1, padding: '10px', background: 'transparent', border: '1px solid #666', color: '#ccc', borderRadius: '4px' }}
+                    className="neo-btn secondary"
+                    onClick={() => { setStep('input_id'); setInputPatientId(''); }}
                   >
                     戻る
                   </button>
+                </div>
+              </div>
+            )}
+
+            {step === 'input_new' && (
+              <div className="neo-form-container">
+                <p style={{ textAlign: 'center', margin: 0 }}>氏名を入力してください</p>
+                <div>
+                  <div style={{ marginBottom: 20, textAlign: 'center', color: '#00f0ff', fontSize: '1.2rem', fontFamily: 'OCR A Std' }}>No. {inputPatientId}</div>
+                  <label className="neo-label">FULL NAME</label>
+                  <input
+                    className="neo-input"
+                    type="text"
+                    value={inputName}
+                    onChange={(e) => setInputName(e.target.value)}
+                    placeholder="山田 太郎"
+                    style={{ textAlign: 'left' }} // Ensure name aligns left
+                    autoFocus
+                  />
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
                   <motion.button
-                    className="holo-btn"
-                    style={{ flex: 2 }}
+                    className="neo-btn"
                     onClick={handleLink}
                     disabled={registering || !inputName}
                     whileTap={{ scale: 0.95 }}
                   >
                     {registering ? '登録中...' : '登録して連携'}
                   </motion.button>
+                  <button
+                    className="neo-btn secondary"
+                    onClick={() => { setStep('input_id'); }}
+                  >
+                    戻る
+                  </button>
                 </div>
-              </>
+              </div>
             )}
           </motion.div>
         ) : (
