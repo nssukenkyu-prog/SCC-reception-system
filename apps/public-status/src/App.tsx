@@ -79,7 +79,7 @@ function App() {
 
           <div className="stat-box wait-time" style={{ flex: 1, height: '400px' }}>
             <div className="stat-label">推定待ち時間</div>
-            <div className="stat-value" style={{ fontSize: '4rem', lineHeight: '1.2' }}>
+            <div className="stat-value" style={{ fontSize: '3.5rem', lineHeight: '1.3', padding: '0 20px' }}>
               {waitDisplay}
             </div>
           </div>

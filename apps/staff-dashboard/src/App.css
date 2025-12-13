@@ -186,8 +186,10 @@ header h1 {
   /* Adjust padding if prefix exists */
   border-radius: 8px;
   font-family: 'Inter', sans-serif;
-  font-size: 1rem;
-  width: 200px;
+  font-size: 1.1rem;
+  /* Increased from 1rem */
+  width: 220px;
+  /* Increased Width */
   outline: none;
   transition: all 0.3s ease;
 }
@@ -214,7 +216,8 @@ header h1 {
   padding: 12px 30px;
   color: #000;
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
+  /* Increased from 0.9rem */
   letter-spacing: 0.1em;
   cursor: pointer;
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
@@ -264,7 +267,9 @@ header h1 {
 }
 
 .stat-card h3 {
-  font-size: 0.8rem;
+  font-size: 0.95rem;
+  /* Increased from 0.8rem */
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--text-secondary);
@@ -291,7 +296,8 @@ header h1 {
 
 .visit-list-header {
   color: var(--text-secondary);
-  font-size: 0.85rem;
+  font-size: 0.95rem;
+  /* Increased from 0.85rem */
   text-transform: uppercase;
   letter-spacing: 0.05em;
   padding: 0 30px;

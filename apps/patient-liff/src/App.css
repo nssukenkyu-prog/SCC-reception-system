@@ -131,7 +131,7 @@ input.holo-input::placeholder {
   /* Sharp edges for sci-fi look */
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: all 0.2s;
   box-shadow: 0 0 15px rgba(0, 240, 255, 0.4);
 }
