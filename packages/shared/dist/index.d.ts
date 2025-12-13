@@ -2,8 +2,8 @@ export interface Patient {
     patientId: string;
     name: string;
     kana: string;
-    lineUserId?: string;
-    firebaseUid?: string;
+    lineUserId?: string | null;
+    firebaseUid?: string | null;
     linkedAt?: any;
     lastVisit?: any;
 }

@@ -27,9 +27,9 @@ export const linkPatient = async (patientId: string, lineUserId: string, name: s
         const newPatient: Patient = {
             patientId,
             name: name,
-            kana: name, // Fallback for kana
+            kana: name, // Fallback for name
             lineUserId,
-            firebaseUid: auth.currentUser?.uid,
+            firebaseUid: auth.currentUser?.uid || null,
             linkedAt: serverTimestamp()
         };
         await setDoc(patientRef, newPatient);
