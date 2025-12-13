@@ -200,7 +200,10 @@ function App() {
             <input
               placeholder="診察券番号"
               value={proxyId}
-              onChange={e => setProxyId(e.target.value)}
+              onChange={e => {
+                const val = e.target.value.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+                setProxyId(val);
+              }}
               className="cyber-input"
             />
           </div>

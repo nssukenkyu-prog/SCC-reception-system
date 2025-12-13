@@ -162,7 +162,10 @@ function App() {
                     pattern="\d*"
                     inputMode="numeric"
                     value={inputPatientId}
-                    onChange={(e) => setInputPatientId(e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[０-９]/g, (s) => String.fromCharCode(s.charCodeAt(0) - 0xFEE0));
+                      setInputPatientId(val);
+                    }}
                     placeholder="例: 1234"
                     autoFocus
                   />
