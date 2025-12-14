@@ -6,6 +6,7 @@ export interface Patient {
     firebaseUid?: string | null;
     linkedAt?: any;
     lastVisit?: any;
+    birthDate?: string;
 }
 export type VisitStatus = 'active' | 'paid' | 'cancelled';
 export interface Visit {

@@ -171,7 +171,7 @@ function App() {
                   <label className="neo-label">ID NUMBER</label>
                   <input
                     className="neo-input"
-                    type="text" // Changed from tel to text to allow custom pattern handling if needed, but tel is better for numpad. Let's stick to tel but ensure large font.
+                    type="text"
                     inputMode="numeric"
                     pattern="[0-9]*"
                     value={inputPatientId}
@@ -185,12 +185,52 @@ function App() {
                 </div>
                 <motion.button
                   className="neo-btn"
-                  onClick={handleCheckId}
-                  disabled={registering || !inputPatientId}
+                  onClick={handleNextToDob}
+                  disabled={!inputPatientId}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {registering ? '確認中...' : '次へ'}
+                  次へ
                 </motion.button>
+              </div>
+            )}
+
+            {step === 'input_dob' && (
+              <div className="neo-form-container">
+                <div style={{ marginBottom: 10, textAlign: 'center', color: '#00f0ff', fontSize: '1.2rem', fontFamily: 'OCR A Std' }}>ID: {inputPatientId}</div>
+                <p style={{ textAlign: 'center', margin: 0, opacity: 0.8 }}>生年月日を入力してください</p>
+                <div>
+                  <label className="neo-label">BIRTH DATE (YYYYMMDD)</label>
+                  <input
+                    className="neo-input"
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    maxLength={8}
+                    value={inputBirthDate}
+                    onChange={(e) => {
+                      const val = e.target.value.replace(/[^0-9]/g, '');
+                      setInputBirthDate(val);
+                    }}
+                    placeholder="19900101"
+                    autoFocus
+                  />
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+                  <motion.button
+                    className="neo-btn"
+                    onClick={handleVerifyDob}
+                    disabled={registering || inputBirthDate.length !== 8}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {registering ? '確認中...' : '確認する'}
+                  </motion.button>
+                  <button
+                    className="neo-btn secondary"
+                    onClick={() => { setStep('input_id'); }}
+                  >
+                    戻る
+                  </button>
+                </div>
               </div>
             )}
 
@@ -219,7 +259,7 @@ function App() {
                   </motion.button>
                   <button
                     className="neo-btn secondary"
-                    onClick={() => { setStep('input_id'); setInputPatientId(''); }}
+                    onClick={() => { setStep('input_dob'); }}
                   >
                     戻る
                   </button>
@@ -231,7 +271,9 @@ function App() {
               <div className="neo-form-container">
                 <p style={{ textAlign: 'center', margin: 0 }}>氏名を入力してください</p>
                 <div>
-                  <div style={{ marginBottom: 20, textAlign: 'center', color: '#00f0ff', fontSize: '1.2rem', fontFamily: 'OCR A Std' }}>No. {inputPatientId}</div>
+                  <div style={{ marginBottom: 10, textAlign: 'center', color: '#00f0ff', fontSize: '1rem', fontFamily: 'OCR A Std' }}>
+                    No. {inputPatientId} / {inputBirthDate}
+                  </div>
                   <label className="neo-label">FULL NAME</label>
                   <input
                     className="neo-input"
@@ -239,7 +281,7 @@ function App() {
                     value={inputName}
                     onChange={(e) => setInputName(e.target.value)}
                     placeholder="山田 太郎"
-                    style={{ textAlign: 'left' }} // Ensure name aligns left
+                    style={{ textAlign: 'left' }}
                     autoFocus
                   />
                 </div>
@@ -255,7 +297,7 @@ function App() {
                   </motion.button>
                   <button
                     className="neo-btn secondary"
-                    onClick={() => { setStep('input_id'); }}
+                    onClick={() => { setStep('input_dob'); }}
                   >
                     戻る
                   </button>

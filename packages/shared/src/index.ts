@@ -6,6 +6,7 @@ export interface Patient {
     firebaseUid?: string | null;
     linkedAt?: any; // Timestamp
     lastVisit?: any; // Timestamp
+    birthDate?: string; // YYYY-MM-DD for verification
 }
 
 export type VisitStatus = 'active' | 'paid' | 'cancelled';

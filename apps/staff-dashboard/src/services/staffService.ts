@@ -120,7 +120,8 @@ export const importPatients = async (csvText: string) => {
     let count = 0;
 
     for (const line of lines) {
-        const [patientId, name] = line.split(',').map(s => s.trim());
+        // Expected CSV format: ID, Name, BirthDate (e.g., 2000-01-01)
+        const [patientId, name, birthDate] = line.split(',').map(s => s.trim());
         if (!patientId || !name) continue;
 
         const ref = doc(db, 'patients', patientId);
@@ -128,11 +129,13 @@ export const importPatients = async (csvText: string) => {
             patientId,
             name,
             kana: name,
+            // Save birthDate if provided
+            ...(birthDate ? { birthDate } : {}),
             updatedAt: serverTimestamp()
         }, { merge: true });
 
         count++;
-        if (count >= 450) {
+        if (count >= 400) { // Safety buffer below 500 limit
             await batch.commit();
             count = 0;
         }
