@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase';
 import { initLiff } from './liff';
-import { getPatientByLineId, linkPatient, createVisit } from './services/patientService';
+import { getPatientByLineId, createVisit } from './services/patientService';
 import type { Patient } from '@reception/shared';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import liff from '@line/liff';
@@ -15,8 +15,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [inputPatientId, setInputPatientId] = useState('');
   const [inputName, setInputName] = useState('');
-  const [foundName, setFoundName] = useState('');
-  const [step, setStep] = useState<'input_id' | 'confirm_existing' | 'input_new'>('input_id');
+  const [step, setStep] = useState<'input_id' | 'input_name'>('input_id');
   const [registering, setRegistering] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
@@ -41,44 +40,25 @@ function App() {
     init();
   }, []);
 
-  const handleNextToConfirm = async () => {
+  const handleNextToName = () => {
     if (!inputPatientId) return;
-    setRegistering(true);
-    try {
-      // Import getPatientById dynamically
-      const { getPatientById } = await import('./services/patientService');
-      const existing = await getPatientById(inputPatientId);
-
-      if (existing) {
-        setFoundName(existing.name);
-        setStep('confirm_existing');
-      } else {
-        // Not found -> New Registration
-        setStep('input_new');
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert(e.message);
-    } finally {
-      setRegistering(false);
-    }
+    setStep('input_name');
   };
 
   const handleLink = async () => {
-    if (!user?.userId || !inputPatientId) return;
-    const nameToUse = step === 'confirm_existing' ? foundName : inputName;
-    if (!nameToUse) return;
+    if (!user?.userId || !inputPatientId || !inputName) return;
 
     setRegistering(true);
     setError(null);
     try {
-      // Pass birthDate as 4th argument (REMOVED)
-      await linkPatient(inputPatientId, user.userId, nameToUse);
-      // Refresh patient
-      const p = await getPatientByLineId(user.userId);
+      const { linkPatient } = await import('./services/patientService');
+      // Pass both ID and Name to be verified server-side (or securely in service)
+      const p = await linkPatient(inputPatientId, user.userId, inputName);
       setPatient(p);
     } catch (e: any) {
-      setError(e.message);
+      console.error(e);
+      alert(e.message); // Show "Invalid ID or Name"
+      // Optional: Clear name to force retry
     } finally {
       setRegistering(false);
     }
@@ -191,56 +171,23 @@ function App() {
                 </div>
                 <motion.button
                   className="neo-btn"
-                  onClick={handleNextToConfirm}
-                  disabled={!inputPatientId || registering}
+                  onClick={handleNextToName}
+                  disabled={!inputPatientId}
                   whileTap={{ scale: 0.95 }}
                 >
-                  {registering ? '確認中...' : '次へ'}
+                  次へ
                 </motion.button>
               </div>
             )}
 
-            {step === 'confirm_existing' && (
+            {step === 'input_name' && (
               <div className="neo-form-container">
-                <p style={{ textAlign: 'center', margin: 0 }}>このお名前でよろしいですか？</p>
-                <div style={{
-                  padding: '20px',
-                  border: '2px solid #00f0ff',
-                  borderRadius: '16px',
-                  background: 'rgba(0, 240, 255, 0.1)',
-                  textAlign: 'center'
-                }}>
-                  <div style={{ fontSize: '0.9rem', color: '#00f0ff', marginBottom: 5 }}>No. {inputPatientId}</div>
-                  <h2 style={{ margin: 0, color: '#fff', fontSize: '2rem' }}>{foundName} <span style={{ fontSize: '1rem' }}>様</span></h2>
-                </div>
-
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  <motion.button
-                    className="neo-btn"
-                    onClick={handleLink}
-                    disabled={registering}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {registering ? '発行中...' : 'はい、連携します'}
-                  </motion.button>
-                  <button
-                    className="neo-btn secondary"
-                    onClick={() => { setStep('input_id'); }}
-                  >
-                    戻る
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {step === 'input_new' && (
-              <div className="neo-form-container">
-                <p style={{ textAlign: 'center', margin: 0 }}>氏名を入力してください</p>
+                <p style={{ textAlign: 'center', margin: 0 }}>氏名（漢字）を入力してください</p>
                 <div>
                   <div style={{ marginBottom: 10, textAlign: 'center', color: '#00f0ff', fontSize: '1rem', fontFamily: 'OCR A Std' }}>
                     No. {inputPatientId}
                   </div>
-                  <label className="neo-label">FULL NAME</label>
+                  <label className="neo-label">FULL NAME (KANJI)</label>
                   <input
                     className="neo-input"
                     type="text"
@@ -250,6 +197,7 @@ function App() {
                     style={{ textAlign: 'left' }}
                     autoFocus
                   />
+                  <p style={{ fontSize: '0.7rem', color: '#666', marginTop: 5 }}>※スペースの有無は無視されます</p>
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
@@ -259,7 +207,7 @@ function App() {
                     disabled={registering || !inputName}
                     whileTap={{ scale: 0.95 }}
                   >
-                    {registering ? '登録中...' : '登録して連携'}
+                    {registering ? '照合中...' : 'アカウント連携'}
                   </motion.button>
                   <button
                     className="neo-btn secondary"

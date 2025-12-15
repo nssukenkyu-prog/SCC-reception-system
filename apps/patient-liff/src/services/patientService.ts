@@ -1,5 +1,5 @@
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp, runTransaction, setDoc } from 'firebase/firestore';
-import { db, auth } from '../firebase';
+import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { db } from '../firebase';
 import type { Patient, Visit } from '@reception/shared';
 
 // Find patient by LINE ID (auto-login)
@@ -10,51 +10,44 @@ export const getPatientByLineId = async (lineUserId: string): Promise<Patient | 
     return { ...snapshot.docs[0].data(), patientId: snapshot.docs[0].id } as Patient;
 };
 
-// Check if patient exists by ID (Simplified: No DOB verification)
-export const getPatientById = async (patientId: string): Promise<Patient | null> => {
+// Check if patient exists AND name matches (Blind Verification)
+export const verifyPatientNameMatch = async (patientId: string, inputName: string): Promise<Patient> => {
     const patientRef = doc(db, 'patients', patientId);
     const snapshot = await getDoc(patientRef);
 
     if (!snapshot.exists()) {
-        return null; // Not found -> New Patient Flow
+        throw new Error('診察券番号または氏名が正しくありません。');
     }
 
     const data = snapshot.data() as Patient;
+
+    // Normalize: Remove all white spaces (half-width ' ' and full-width '　')
+    const normalize = (str: string) => (str || '').replace(/[\s\u3000]+/g, '');
+
+    if (normalize(data.name) !== normalize(inputName)) {
+        throw new Error('診察券番号または氏名が正しくありません。');
+    }
+
     return { ...data, patientId: snapshot.id };
 };
 
 export const linkPatient = async (patientId: string, lineUserId: string, name: string): Promise<Patient> => {
+    // Re-verify strictly before linking
+    const patient = await verifyPatientNameMatch(patientId, name);
     const patientRef = doc(db, 'patients', patientId);
-    const patientSnap = await getDoc(patientRef);
 
-    if (!patientSnap.exists()) {
-        // Create new patient without birthDate requirement
-        const newPatient: Patient = {
-            patientId,
-            name: name,
-            kana: name,
-            // birthDate: birthDate, // Removed
-            lineUserId,
-            firebaseUid: auth.currentUser?.uid || null,
-            linkedAt: serverTimestamp()
-        };
-        await setDoc(patientRef, newPatient);
-        return newPatient;
-    }
-
-    const data = patientSnap.data() as Patient;
-
-    if (data.lineUserId && data.lineUserId !== lineUserId) {
+    if (patient.lineUserId && patient.lineUserId !== lineUserId) {
         throw new Error('この診察券番号は既に他のLINEアカウントと連携されています。');
     }
 
     await updateDoc(patientRef, {
         lineUserId,
-        name: name,
         linkedAt: serverTimestamp()
+        // We don't update the name here, we trust the DB name is correct since it matched. 
+        // Or we could update it if we wanted to sync format, but better to leave DB as source of truth.
     });
 
-    return { ...data, lineUserId, name, patientId };
+    return { ...patient, lineUserId };
 };
 
 export const createVisit = async (patient: Patient): Promise<void> => {
