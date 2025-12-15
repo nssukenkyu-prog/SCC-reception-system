@@ -1,14 +1,13 @@
 import { useEffect, useState } from 'react';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
-import { signInAnonymously } from 'firebase/auth';
-import { db, auth } from './firebase';
-import type { Visit } from '@reception/shared';
 import './App.css';
 
 function App() {
-  const [activeVisits, setActiveVisits] = useState<Visit[]>([]);
+  const [activeCount, setActiveCount] = useState<number | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
+
+  // API URL
+  const API_URL = "https://us-central1-sccreception-system.cloudfunctions.net/getCongestion";
 
   // Clock
   useEffect(() => {
@@ -16,47 +15,40 @@ function App() {
     return () => clearInterval(timer);
   }, []);
 
-  // Data Sync
+  // Data Sync (Polling)
   useEffect(() => {
-    let unsubscribe: () => void;
-
-    // Auth then listen
-    signInAnonymously(auth).then(() => {
-      const today = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
-      const q = query(
-        collection(db, 'visits'),
-        where('date', '==', today),
-        where('status', '==', 'active'),
-        orderBy('arrivedAt', 'asc')
-      );
-      unsubscribe = onSnapshot(q, (snapshot) => {
-        const visits = snapshot.docs.map(d => ({ ...d.data() } as Visit));
-        setActiveVisits(visits);
+    const fetchStatus = async () => {
+      try {
+        const res = await fetch(API_URL);
+        if (!res.ok) throw new Error('API Error');
+        const data = await res.json();
+        setActiveCount(data.count);
         setLoading(false);
-      });
-    }).catch(err => console.error("Auth/Sync Error:", err));
-
-    return () => {
-      if (unsubscribe) unsubscribe();
+      } catch (e) {
+        console.error("Failed to fetch status", e);
+        // Retry or just keep existing state
+      }
     };
+
+    fetchStatus(); // Initial fetch
+    const interval = setInterval(fetchStatus, 30000); // Poll every 30 seconds
+    return () => clearInterval(interval);
   }, []);
 
-  // Calc Logic
-  const activeCount = activeVisits.length;
-
   let waitDisplay = '';
-  // New Logic per user request
-  if (activeCount <= 3) {
+  // Logic per user request
+  const count = activeCount || 0;
+  if (count <= 3) {
     waitDisplay = 'すぐご案内可能です';
-  } else if (activeCount <= 8) {
+  } else if (count <= 8) {
     waitDisplay = '5〜10分以内にご案内可能';
-  } else if (activeCount <= 12) {
+  } else if (count <= 12) {
     waitDisplay = '10〜15分以内にご案内可能';
   } else {
     waitDisplay = '15分以上';
   }
 
-  if (loading) return <div style={{ color: 'white', padding: 50 }}>Connecting to Live System...</div>;
+  if (loading && activeCount === null) return <div style={{ color: 'white', padding: 50 }}>Connecting to Live System...</div>;
 
   return (
     <div className="monitor-container">
@@ -73,7 +65,7 @@ function App() {
           <div className="stat-box">
             <div className="stat-label">キュアセンター内の人数</div>
             <div className="stat-value count-value">
-              {activeCount}<span className="stat-unit">人</span>
+              {count}<span className="stat-unit">人</span>
             </div>
           </div>
 
@@ -87,7 +79,7 @@ function App() {
       </div>
 
       <footer>
-        <div>SCC Reception Monitor System • Updating in Real-time</div>
+        <div>SCC Reception Monitor System • Updates automatically</div>
       </footer>
     </div >
   );
