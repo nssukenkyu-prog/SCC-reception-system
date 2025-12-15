@@ -167,6 +167,30 @@ function App() {
     );
   }
 
+  // Sync to Public Monitor (Client-side Aggregation)
+  useEffect(() => {
+    if (!visits) return;
+    const activeCount = visits.filter(v => v.status === 'active').length;
+
+    // Debounce or just write (it's low frequency enough manually)
+    // But since it comes from snapshot, let's write.
+    // Ensure we import db/setDoc/doc first.
+    // Actually, let's do it safely.
+    const syncPublicStatus = async () => {
+      try {
+        const { doc, setDoc } = await import('firebase/firestore');
+        const { db } = await import('./firebase');
+        await setDoc(doc(db, 'publicStatus', 'today'), {
+          count: activeCount,
+          updatedAt: new Date()
+        }, { merge: true });
+      } catch (e) {
+        console.error("Failed to sync public status", e);
+      }
+    };
+    syncPublicStatus();
+  }, [visits]);
+
   const activeVisits = visits.filter(v => v.status === 'active');
   const completedVisits = visits.filter(v => v.status !== 'active');
 

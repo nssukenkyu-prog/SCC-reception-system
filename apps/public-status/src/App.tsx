@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from './firebase';
 import './App.css';
 
 function App() {
@@ -6,33 +8,27 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // API URL
-  const API_URL = "https://us-central1-sccreception-system.cloudfunctions.net/getCongestion";
-
   // Clock
   useEffect(() => {
     const timer = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(timer);
   }, []);
 
-  // Data Sync (Polling)
+  // Sync from Public Status Doc
   useEffect(() => {
-    const fetchStatus = async () => {
-      try {
-        const res = await fetch(API_URL);
-        if (!res.ok) throw new Error('API Error');
-        const data = await res.json();
-        setActiveCount(data.count);
-        setLoading(false);
-      } catch (e) {
-        console.error("Failed to fetch status", e);
-        // Retry or just keep existing state
+    // Listen to the aggregated document
+    const unsub = onSnapshot(doc(db, 'publicStatus', 'today'), (doc) => {
+      if (doc.exists()) {
+        setActiveCount(doc.data().count);
+      } else {
+        setActiveCount(0);
       }
-    };
-
-    fetchStatus(); // Initial fetch
-    const interval = setInterval(fetchStatus, 30000); // Poll every 30 seconds
-    return () => clearInterval(interval);
+      setLoading(false);
+    }, (err) => {
+      console.error("Monitor Error:", err);
+      // Fallback or retry?
+    });
+    return () => unsub();
   }, []);
 
   let waitDisplay = '';
