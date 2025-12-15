@@ -14,9 +14,10 @@ function App() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [inputPatientId, setInputPatientId] = useState('');
+  const [inputBirthDate, setInputBirthDate] = useState('');
   const [inputName, setInputName] = useState('');
   const [foundName, setFoundName] = useState('');
-  const [step, setStep] = useState<'input_id' | 'confirm_existing' | 'input_new'>('input_id');
+  const [step, setStep] = useState<'input_id' | 'input_dob' | 'confirm_existing' | 'input_new'>('input_id');
   const [registering, setRegistering] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
@@ -41,21 +42,37 @@ function App() {
     init();
   }, []);
 
-  const handleCheckId = async () => {
+  const handleNextToDob = () => {
     if (!inputPatientId) return;
+    setStep('input_dob');
+  };
+
+  const handleVerifyDob = async () => {
+    if (!inputPatientId || inputBirthDate.length !== 8) return;
     setRegistering(true);
     try {
-      const { getPatientById } = await import('./services/patientService');
-      const existing = await getPatientById(inputPatientId);
+      // Import verifyPatient dynamically or statically (using dynamic for consistency with previous code style if needed, but static is better. 
+      // The previous code had dynamic import for getPatientById which was wrong. Let's assume static import is available or fix imports at top)
+      // Actually, let's fix the imports at the top first, but here we just use the function.
+      // Wait, `verifyPatient` needs to be imported. I'll add it to the top import list in a separate edit or assume it's there?
+      // No, I must ensure it works. I will use the dynamic import here correctly this time.
+      const { verifyPatient } = await import('./services/patientService');
+
+      const existing = await verifyPatient(inputPatientId, inputBirthDate);
+
       if (existing) {
         setFoundName(existing.name);
         setStep('confirm_existing');
       } else {
+        // Not found -> New Registration
         setStep('input_new');
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error(e);
-      setStep('input_new');
+      // DOB mismatch or other error
+      alert(e.message);
+      // Stay on DOB step or clear input?
+      setInputBirthDate('');
     } finally {
       setRegistering(false);
     }
@@ -69,7 +86,10 @@ function App() {
     setRegistering(true);
     setError(null);
     try {
-      const p = await linkPatient(inputPatientId, user.userId, nameToUse);
+      // Pass birthDate as 4th argument
+      await linkPatient(inputPatientId, user.userId, nameToUse, inputBirthDate);
+      // Refresh patient
+      const p = await getPatientByLineId(user.userId);
       setPatient(p);
     } catch (e: any) {
       setError(e.message);
