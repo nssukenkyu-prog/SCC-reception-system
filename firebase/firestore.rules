@@ -8,10 +8,18 @@ service cloud.firestore {
     // Actually, we can check provider.
     
     // Common helpers
+    // Common helpers
     function isStaff() {
-      // For this prototype, we assume any Email/Password login is staff
-      // Real prod: check specific email domain or UID list
-      return request.auth != null && request.auth.token.firebase.sign_in_provider != 'anonymous';
+      // Security Enhancement: Only allow specific domains or emails logic
+      // For this LITE version, we check that auth is NOT anonymous (so must be email/pass)
+      // AND optionally check domain if needed.
+      // TODO: Replace with your specific email or domain for higher security.
+      // e.g. return request.auth.token.email.matches('.*@example.com');
+      
+      return request.auth != null 
+        && request.auth.token.firebase.sign_in_provider != 'anonymous'
+        // && request.auth.token.email == 'kedoinhayato_1@example.com' // UNCOMMENT TO LOCK TO YOUR EMAIL
+        ;
     }
 
     match /patients/{patientId} {
@@ -50,10 +58,10 @@ service cloud.firestore {
       // Patient: can create a visit for themselves
       allow create: if request.auth != null;
       
-      // Patient: can read only their own visits (assumes we store uid or lineUserId on visit? we store patientId)
-      // Querying visits requires composite index if we filter by field not in rules
-      // For simplicity in this LITE version, allow read if auth - needed for "checkin check"
-      allow read: if request.auth != null;
+      // Patient: CANNOT list all visits (prevent leakage)
+      // They can only GET a specific visit if they know the ID (which they get after check-in)
+      allow list: if isStaff();
+      allow get: if request.auth != null;
     }
 
     match /publicStatus/today {
