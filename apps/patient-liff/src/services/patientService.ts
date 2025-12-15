@@ -10,11 +10,8 @@ export const getPatientByLineId = async (lineUserId: string): Promise<Patient | 
     return { ...snapshot.docs[0].data(), patientId: snapshot.docs[0].id } as Patient;
 };
 
-// Check if patient exists by ID and Verify DOB
-// Returns Patient if found and DOB matches.
-// Returns null if ID not found.
-// Throws error if ID found but DOB does not match.
-export const verifyPatient = async (patientId: string, inputBirthDate: string): Promise<Patient | null> => {
+// Check if patient exists by ID (Simplified: No DOB verification)
+export const getPatientById = async (patientId: string): Promise<Patient | null> => {
     const patientRef = doc(db, 'patients', patientId);
     const snapshot = await getDoc(patientRef);
 
@@ -23,32 +20,20 @@ export const verifyPatient = async (patientId: string, inputBirthDate: string): 
     }
 
     const data = snapshot.data() as Patient;
-
-    // Normalize dates for comparison (remove hyphens, etc)
-    const normalizedDbDate = (data.birthDate || '').replace(/[-/]/g, '');
-    const normalizedInputDate = inputBirthDate.replace(/[-/]/g, '');
-
-    // If DB has no birthDate (legacy data), we might allow or fail? 
-    // Secure approach: Require DOB match. Use default or prompt if legacy.
-    // Assuming new data has DOB.
-    if (normalizedDbDate !== normalizedInputDate) {
-        throw new Error('生年月日が一致しません。');
-    }
-
     return { ...data, patientId: snapshot.id };
 };
 
-export const linkPatient = async (patientId: string, lineUserId: string, name: string, birthDate: string): Promise<Patient> => {
+export const linkPatient = async (patientId: string, lineUserId: string, name: string): Promise<Patient> => {
     const patientRef = doc(db, 'patients', patientId);
     const patientSnap = await getDoc(patientRef);
 
     if (!patientSnap.exists()) {
-        // Create new patient with name AND birthDate
+        // Create new patient without birthDate requirement
         const newPatient: Patient = {
             patientId,
             name: name,
             kana: name,
-            birthDate: birthDate,
+            // birthDate: birthDate, // Removed
             lineUserId,
             firebaseUid: auth.currentUser?.uid || null,
             linkedAt: serverTimestamp()
@@ -59,14 +44,6 @@ export const linkPatient = async (patientId: string, lineUserId: string, name: s
 
     const data = patientSnap.data() as Patient;
 
-    // Double check verification just in case
-    const normalizedDbDate = (data.birthDate || '').replace(/[-/]/g, '');
-    const normalizedInputDate = birthDate.replace(/[-/]/g, '');
-
-    if (normalizedDbDate !== normalizedInputDate) {
-        throw new Error('生年月日が一致しません（セキュリティ保護のため連携できません）。');
-    }
-
     if (data.lineUserId && data.lineUserId !== lineUserId) {
         throw new Error('この診察券番号は既に他のLINEアカウントと連携されています。');
     }
@@ -74,11 +51,10 @@ export const linkPatient = async (patientId: string, lineUserId: string, name: s
     await updateDoc(patientRef, {
         lineUserId,
         name: name,
-        birthDate: birthDate, // Ensure it's saved/updated
         linkedAt: serverTimestamp()
     });
 
-    return { ...data, lineUserId, name, patientId, birthDate };
+    return { ...data, lineUserId, name, patientId };
 };
 
 export const createVisit = async (patient: Patient): Promise<void> => {

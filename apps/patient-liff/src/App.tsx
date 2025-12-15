@@ -14,10 +14,9 @@ function App() {
   const [patient, setPatient] = useState<Patient | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [inputPatientId, setInputPatientId] = useState('');
-  const [inputBirthDate, setInputBirthDate] = useState('');
   const [inputName, setInputName] = useState('');
   const [foundName, setFoundName] = useState('');
-  const [step, setStep] = useState<'input_id' | 'input_dob' | 'confirm_existing' | 'input_new'>('input_id');
+  const [step, setStep] = useState<'input_id' | 'confirm_existing' | 'input_new'>('input_id');
   const [registering, setRegistering] = useState(false);
   const [checkingIn, setCheckingIn] = useState(false);
   const [checkedIn, setCheckedIn] = useState(false);
@@ -42,23 +41,13 @@ function App() {
     init();
   }, []);
 
-  const handleNextToDob = () => {
+  const handleNextToConfirm = async () => {
     if (!inputPatientId) return;
-    setStep('input_dob');
-  };
-
-  const handleVerifyDob = async () => {
-    if (!inputPatientId || inputBirthDate.length !== 8) return;
     setRegistering(true);
     try {
-      // Import verifyPatient dynamically or statically (using dynamic for consistency with previous code style if needed, but static is better. 
-      // The previous code had dynamic import for getPatientById which was wrong. Let's assume static import is available or fix imports at top)
-      // Actually, let's fix the imports at the top first, but here we just use the function.
-      // Wait, `verifyPatient` needs to be imported. I'll add it to the top import list in a separate edit or assume it's there?
-      // No, I must ensure it works. I will use the dynamic import here correctly this time.
-      const { verifyPatient } = await import('./services/patientService');
-
-      const existing = await verifyPatient(inputPatientId, inputBirthDate);
+      // Import getPatientById dynamically
+      const { getPatientById } = await import('./services/patientService');
+      const existing = await getPatientById(inputPatientId);
 
       if (existing) {
         setFoundName(existing.name);
@@ -69,10 +58,7 @@ function App() {
       }
     } catch (e: any) {
       console.error(e);
-      // DOB mismatch or other error
       alert(e.message);
-      // Stay on DOB step or clear input?
-      setInputBirthDate('');
     } finally {
       setRegistering(false);
     }
@@ -86,8 +72,8 @@ function App() {
     setRegistering(true);
     setError(null);
     try {
-      // Pass birthDate as 4th argument
-      await linkPatient(inputPatientId, user.userId, nameToUse, inputBirthDate);
+      // Pass birthDate as 4th argument (REMOVED)
+      await linkPatient(inputPatientId, user.userId, nameToUse);
       // Refresh patient
       const p = await getPatientByLineId(user.userId);
       setPatient(p);
@@ -205,52 +191,12 @@ function App() {
                 </div>
                 <motion.button
                   className="neo-btn"
-                  onClick={handleNextToDob}
-                  disabled={!inputPatientId}
+                  onClick={handleNextToConfirm}
+                  disabled={!inputPatientId || registering}
                   whileTap={{ scale: 0.95 }}
                 >
-                  次へ
+                  {registering ? '確認中...' : '次へ'}
                 </motion.button>
-              </div>
-            )}
-
-            {step === 'input_dob' && (
-              <div className="neo-form-container">
-                <div style={{ marginBottom: 10, textAlign: 'center', color: '#00f0ff', fontSize: '1.2rem', fontFamily: 'OCR A Std' }}>ID: {inputPatientId}</div>
-                <p style={{ textAlign: 'center', margin: 0, opacity: 0.8 }}>生年月日を入力してください</p>
-                <div>
-                  <label className="neo-label">BIRTH DATE (YYYYMMDD)</label>
-                  <input
-                    className="neo-input"
-                    type="text"
-                    inputMode="numeric"
-                    pattern="[0-9]*"
-                    maxLength={8}
-                    value={inputBirthDate}
-                    onChange={(e) => {
-                      const val = e.target.value.replace(/[^0-9]/g, '');
-                      setInputBirthDate(val);
-                    }}
-                    placeholder="19900101"
-                    autoFocus
-                  />
-                </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-                  <motion.button
-                    className="neo-btn"
-                    onClick={handleVerifyDob}
-                    disabled={registering || inputBirthDate.length !== 8}
-                    whileTap={{ scale: 0.95 }}
-                  >
-                    {registering ? '確認中...' : '確認する'}
-                  </motion.button>
-                  <button
-                    className="neo-btn secondary"
-                    onClick={() => { setStep('input_id'); }}
-                  >
-                    戻る
-                  </button>
-                </div>
               </div>
             )}
 
@@ -279,7 +225,7 @@ function App() {
                   </motion.button>
                   <button
                     className="neo-btn secondary"
-                    onClick={() => { setStep('input_dob'); }}
+                    onClick={() => { setStep('input_id'); }}
                   >
                     戻る
                   </button>
@@ -292,7 +238,7 @@ function App() {
                 <p style={{ textAlign: 'center', margin: 0 }}>氏名を入力してください</p>
                 <div>
                   <div style={{ marginBottom: 10, textAlign: 'center', color: '#00f0ff', fontSize: '1rem', fontFamily: 'OCR A Std' }}>
-                    No. {inputPatientId} / {inputBirthDate}
+                    No. {inputPatientId}
                   </div>
                   <label className="neo-label">FULL NAME</label>
                   <input
@@ -317,7 +263,7 @@ function App() {
                   </motion.button>
                   <button
                     className="neo-btn secondary"
-                    onClick={() => { setStep('input_dob'); }}
+                    onClick={() => { setStep('input_id'); }}
                   >
                     戻る
                   </button>
