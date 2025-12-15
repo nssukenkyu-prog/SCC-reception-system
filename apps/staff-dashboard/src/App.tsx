@@ -31,10 +31,7 @@ function App() {
     return new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Tokyo' });
   });
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsubscribe();
-  }, []);
+
 
   useEffect(() => {
     if (user && selectedDate) {
@@ -61,6 +58,26 @@ function App() {
       return () => clearTimeout(timer);
     }
   }, [proxyId]);
+
+  // Sync to Public Monitor (Client-side Aggregation)
+  useEffect(() => {
+    if (!visits) return;
+    const activeCount = visits.filter(v => v.status === 'active').length;
+
+    const syncPublicStatus = async () => {
+      try {
+        const { doc, setDoc } = await import('firebase/firestore');
+        const { db } = await import('./firebase');
+        await setDoc(doc(db, 'publicStatus', 'today'), {
+          count: activeCount,
+          updatedAt: new Date()
+        }, { merge: true });
+      } catch (e) {
+        console.error("Failed to sync public status", e);
+      }
+    };
+    syncPublicStatus();
+  }, [visits]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -167,29 +184,7 @@ function App() {
     );
   }
 
-  // Sync to Public Monitor (Client-side Aggregation)
-  useEffect(() => {
-    if (!visits) return;
-    const activeCount = visits.filter(v => v.status === 'active').length;
 
-    // Debounce or just write (it's low frequency enough manually)
-    // But since it comes from snapshot, let's write.
-    // Ensure we import db/setDoc/doc first.
-    // Actually, let's do it safely.
-    const syncPublicStatus = async () => {
-      try {
-        const { doc, setDoc } = await import('firebase/firestore');
-        const { db } = await import('./firebase');
-        await setDoc(doc(db, 'publicStatus', 'today'), {
-          count: activeCount,
-          updatedAt: new Date()
-        }, { merge: true });
-      } catch (e) {
-        console.error("Failed to sync public status", e);
-      }
-    };
-    syncPublicStatus();
-  }, [visits]);
 
   const activeVisits = visits.filter(v => v.status === 'active');
   const completedVisits = visits.filter(v => v.status !== 'active');
