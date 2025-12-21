@@ -7,66 +7,72 @@ service cloud.firestore {
     // any authenticated user with email/password is staff, and anonymous is patient.
     // Actually, we can check provider.
     
-    // Common helpers
-    // Common helpers
-    function isStaff() {
-      // Security Enhancement: Only allow specific domains or emails logic
-      // For this LITE version, we check that auth is NOT anonymous (so must be email/pass)
-      // AND optionally check domain if needed.
-      // TODO: Replace with your specific email or domain for higher security.
-      // e.g. return request.auth.token.email.matches('.*@example.com');
-      
-      return request.auth != null 
-        && request.auth.token.firebase.sign_in_provider != 'anonymous'
-        // && request.auth.token.email == 'kedoinhayato_1@example.com' // UNCOMMENT TO LOCK TO YOUR EMAIL
-        ;
-    }
-
-    match /patients/{patientId} {
-      // Staff can do anything
-      allow read, write: if isStaff();
-      
-      // Patient can create their own record or read it
-      // Since we don't always know patientId == auth.uid (we map them), 
-      // we allow create if auth is strict, but let's allow any auth for now as long as they authenticate
-      // Allow create by authenticated users
-      allow create: if request.auth != null;
-      
-      // Allow read if:
-      // 1. Doc doesn't exist (resource == null) - needed for existence check
-      // 2. User owns the doc (firebaseUid match)
-      // 3. Doc is unclaimed (firebaseUid missing or null)
-      allow read: if request.auth != null && (
-        resource == null ||
-        resource.data.firebaseUid == request.auth.uid || 
-        !('firebaseUid' in resource.data) ||
-        resource.data.firebaseUid == null
-      );
-
-      // Allow update only if user owns it or it's unclaimed
-      allow update: if request.auth != null && (
-        resource.data.firebaseUid == request.auth.uid || 
-        !('firebaseUid' in resource.data) ||
-        resource.data.firebaseUid == null
-      );
-    }
-
-    match /visits/{visitId} {
-      // Staff
-      allow read, write: if isStaff();
-      
-      // Patient: can create a visit for themselves
-      allow create: if request.auth != null;
-      
-      // Patient: CANNOT list all visits (prevent leakage)
-      // They can only GET a specific visit if they know the ID (which they get after check-in)
-      allow list: if isStaff();
-      allow get: if request.auth != null;
-    }
-
-    match /publicStatus/today {
-      allow read: if true;
-      allow write: if isStaff();
-    }
-  }
+    // スタッフ判定
+// セキュリティ強化: 指定されたメールアドレスを持つユーザーのみを許可
+function isStaff() {
+  return request.auth != null 
+    && request.auth.token.firebase.sign_in_provider != 'anonymous'
+    && request.auth.token.email in ['nssu.kenkyu@gmail.com', 'nssu.scc@gmail.com'];
 }
+
+// 患者データ
+match /patients/{patientId} {
+  allow read, write: if isStaff();
+  
+  // 新規作成は誰でも許可（ただし適切な初期データが必要）
+  allow create: if request.auth != null;
+  
+  // 読み取り許可:
+  // 1. 文書が存在しない（存在確認のため）
+  // 2. 自分のデータ（firebaseUidが一致）
+  // 3. 所有者が決まっていない（firebaseUidがない） -> レガシー/未連携データ
+  //    ※セキュリティ上は好ましくないが、既存フロー（ID+氏名入力）維持のため残す。
+  //    ただし、書き込み側で「乗っ取り」を防ぐ。
+  allow read: if request.auth != null && (
+    resource == null || 
+    resource.data.firebaseUid == request.auth.uid || 
+    !('firebaseUid' in resource.data) ||
+    resource.data.firebaseUid == null
+  );
+
+  // 更新許可:
+  // 1. 自分が所有者の場合 (既存の所有者)
+  // 2. まだ所有者がおらず、今回自分が所有者になろうとしている場合 (claims access)
+  //    条件: 元のfirebaseUidが空 AND 新しいfirebaseUidが自分のUID
+  allow update: if request.auth != null && (
+    (resource.data.firebaseUid == request.auth.uid) ||
+    (
+      (!('firebaseUid' in resource.data) || resource.data.firebaseUid == null) &&
+      request.resource.data.firebaseUid == request.auth.uid
+    )
+  );
+}
+
+// 来院データ
+match /visits/{visitId} {
+  // スタッフは全操作OK
+  allow read, write: if isStaff();
+  
+  // 患者は作成のみOK
+  allow create: if request.auth != null;
+  
+  // 一覧取得(List)はスタッフのみ。
+  allow list: if isStaff();
+
+  // 個別の取得(Get)
+  // 1. 自分がスタッフである
+  // 2. その来院記録の所有者である（firebaseUid が一致）
+  //    ※既存データに firebaseUid がない場合、古いルールでは誰でも見れたが、
+  //      セキュリティ強化のため「自分のもの」と証明できる場合のみ許可する方針へ変更。
+  //      ただし、既存の運用に影響が出ないか注意が必要だが、
+  //      作成時に firebaseUid を保存するようにコード修正済み。
+  allow get: if request.auth != null && (
+    resource.data.firebaseUid == request.auth.uid
+  );
+}
+
+match /publicStatus/today {
+  allow read: if true;
+  allow write: if isStaff();
+}
+} }

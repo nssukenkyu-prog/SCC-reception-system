@@ -1,5 +1,5 @@
 import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
-import { db } from '../firebase';
+import { db, auth } from '../firebase';
 import type { Patient, Visit } from '@reception/shared';
 
 // Find patient by LINE ID (auto-login)
@@ -42,6 +42,8 @@ export const linkPatient = async (patientId: string, lineUserId: string, name: s
 
     await updateDoc(patientRef, {
         lineUserId,
+        // SECURITY: Save the firebaseUid to claim ownership of this document
+        firebaseUid: auth.currentUser?.uid,
         linkedAt: serverTimestamp()
         // We don't update the name here, we trust the DB name is correct since it matched. 
         // Or we could update it if we wanted to sync format, but better to leave DB as source of truth.
@@ -74,6 +76,8 @@ export const createVisit = async (patient: Patient): Promise<void> => {
             patientId: patient.patientId,
             name: patient.name,
             lineUserId: patient.lineUserId || undefined,
+            // SECURITY: Save firebaseUid for access control
+            firebaseUid: auth.currentUser?.uid,
             status: 'active',
             arrivedAt: serverTimestamp(),
             createdBy: 'patient'
