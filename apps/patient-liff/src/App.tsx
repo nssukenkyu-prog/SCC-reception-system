@@ -23,8 +23,12 @@ function App() {
   useEffect(() => {
     const init = async () => {
       try {
-        await signInAnonymously(auth);
-        const profile = await initLiff();
+        // Run both init tasks in parallel to reduce loading time
+        const [_, profile] = await Promise.all([
+          signInAnonymously(auth),
+          initLiff()
+        ]);
+
         setUser(profile);
         if (profile?.userId) {
           const p = await getPatientByLineId(profile.userId);
