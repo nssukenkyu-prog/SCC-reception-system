@@ -17,6 +17,7 @@ export interface Visit {
     patientId: string;
     name: string;
     lineUserId?: string;
+    firebaseUid?: string; // For security rules (ownership check)
     status: VisitStatus;
     arrivedAt: any; // Timestamp
     completedAt?: any; // Timestamp
