@@ -12,7 +12,7 @@ service cloud.firestore {
 function isStaff() {
   return request.auth != null 
     && request.auth.token.firebase.sign_in_provider != 'anonymous'
-    && request.auth.token.email in ['nssu.kenkyu@gmail.com', 'nssu.scc@gmail.com'];
+    && request.auth.token.email in ['nssu.kenkyu@gmail.com', 'nssu.scc@gmail.com', 'scc@nittai.ac.jp'];
 }
 
 // 患者データ
@@ -56,18 +56,10 @@ match /visits/{visitId} {
   // 患者は作成のみOK
   allow create: if request.auth != null;
   
-  // 一覧取得(List)はスタッフのみ。
-  allow list: if isStaff();
-
-  // 個別の取得(Get)
-  // 1. 自分がスタッフである
-  // 2. その来院記録の所有者である（firebaseUid が一致）
-  //    ※既存データに firebaseUid がない場合、古いルールでは誰でも見れたが、
-  //      セキュリティ強化のため「自分のもの」と証明できる場合のみ許可する方針へ変更。
-  //      ただし、既存の運用に影響が出ないか注意が必要だが、
-  //      作成時に firebaseUid を保存するようにコード修正済み。
-  allow get: if request.auth != null && (
-    resource.data.firebaseUid == request.auth.uid
+  // 読み取り許可 (List/Get)
+  // Stack: スタッフ OR 自分のデータ(firebaseUid一致)
+  allow read: if isStaff() || (
+    request.auth != null && resource.data.firebaseUid == request.auth.uid
   );
 }
 

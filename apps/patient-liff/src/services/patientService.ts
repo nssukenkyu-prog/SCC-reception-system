@@ -63,7 +63,8 @@ export const createVisit = async (patient: Patient): Promise<void> => {
             collection(db, 'visits'),
             where('patientId', '==', patient.patientId),
             where('date', '==', today),
-            where('status', '==', 'active')
+            where('status', '==', 'active'),
+            where('firebaseUid', '==', auth.currentUser?.uid)
         );
         const snapshot = await getDocs(q);
         if (!snapshot.empty) {
