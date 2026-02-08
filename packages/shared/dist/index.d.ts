@@ -15,6 +15,7 @@ export interface Visit {
     patientId: string;
     name: string;
     lineUserId?: string;
+    firebaseUid?: string;
     status: VisitStatus;
     arrivedAt: any;
     completedAt?: any;
