@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { signInAnonymously } from 'firebase/auth';
 import { auth } from './firebase';
 import { initLiff } from './liff';
@@ -7,8 +8,9 @@ import type { Patient } from '@reception/shared';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import liff from '@line/liff';
 import './App.css';
+import { PrivacyPolicy } from './PrivacyPolicy';
 
-function App() {
+function Home() {
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<any>(null);
   const [patient, setPatient] = useState<Patient | null>(null);
@@ -290,7 +292,22 @@ function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <footer style={{ marginTop: 20, textAlign: 'center', opacity: 0.6, fontSize: '0.8rem' }}>
+        <Link to="/privacy" style={{ color: 'white', textDecoration: 'none' }}>Privacy Policy</Link>
+      </footer>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/privacy" element={<PrivacyPolicy />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
