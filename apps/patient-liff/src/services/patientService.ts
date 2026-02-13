@@ -1,4 +1,4 @@
-import { collection, query, where, getDocs, doc, updateDoc, getDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
+import { collection, query, where, getDocs, doc, updateDoc, setDoc, getDoc, serverTimestamp, runTransaction } from 'firebase/firestore';
 import { db, auth } from '../firebase';
 import type { Patient, Visit } from '@reception/shared';
 
@@ -32,24 +32,54 @@ export const verifyPatientNameMatch = async (patientId: string, inputName: strin
 };
 
 export const linkPatient = async (patientId: string, lineUserId: string, name: string): Promise<Patient> => {
-    // Re-verify strictly before linking
-    const patient = await verifyPatientNameMatch(patientId, name);
     const patientRef = doc(db, 'patients', patientId);
+    const snapshot = await getDoc(patientRef);
 
-    if (patient.lineUserId && patient.lineUserId !== lineUserId) {
-        throw new Error('この診察券番号は既に他のLINEアカウントと連携されています。');
+    // Case 1: Patient exists -> Verify and Link
+    if (snapshot.exists()) {
+        const patient = snapshot.data() as Patient;
+
+        // Normalize: Remove all white spaces
+        const normalize = (str: string) => (str || '').replace(/[\s\u3000]+/g, '');
+
+        if (normalize(patient.name) !== normalize(name)) {
+            throw new Error('診察券番号または氏名が正しくありません。');
+        }
+
+        if (patient.lineUserId && patient.lineUserId !== lineUserId) {
+            throw new Error('この診察券番号は既に他のLINEアカウントと連携されています。');
+        }
+
+        await updateDoc(patientRef, {
+            lineUserId,
+            // SECURITY: Save the firebaseUid to claim ownership of this document if not already set?
+            // Usually for existing patients, we might not want to overwrite ownership if it was set by staff?
+            // But for LINE link, we do want to associate.
+            firebaseUid: auth.currentUser?.uid,
+            linkedAt: serverTimestamp()
+        });
+
+        return { ...patient, lineUserId, patientId };
     }
 
-    await updateDoc(patientRef, {
-        lineUserId,
-        // SECURITY: Save the firebaseUid to claim ownership of this document
-        firebaseUid: auth.currentUser?.uid,
-        linkedAt: serverTimestamp()
-        // We don't update the name here, we trust the DB name is correct since it matched. 
-        // Or we could update it if we wanted to sync format, but better to leave DB as source of truth.
-    });
+    // Case 2: Patient does NOT exist -> Create New
+    else {
+        const newPatient: Patient = {
+            patientId,
+            name,
+            kana: '', // Optional or empty for now
+            lineUserId,
+            firebaseUid: auth.currentUser?.uid,
+            linkedAt: serverTimestamp(),
+            // Set a default birthDate or leave undefined? Patient type has it optional?
+            // Checking shared/index.ts: birthDate?: string
+        };
 
-    return { ...patient, lineUserId };
+        // We use setDoc with a specific ID (patientId)
+        await setDoc(patientRef, newPatient);
+
+        return newPatient;
+    }
 };
 
 export const createVisit = async (patient: Patient): Promise<void> => {
